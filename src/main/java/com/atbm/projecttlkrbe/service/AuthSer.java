@@ -10,10 +10,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class AuthSer {
     private final AuthRep rep;
+    private final VerifySer verifySer;
     private final PasswordEncoder passwordEncoder;
 
     // Check email
@@ -23,21 +27,34 @@ public class AuthSer {
 
     // Sign Up
     public AuthRes signUp(AuthReq authReq) {
-        if (checkEmail(authReq.getEmail())) throw new RuntimeException("Email already exists");
+        Optional<Auth> authEmail = rep.findByEmail(authReq.getEmail());
+        if (authEmail.isPresent()) { // exists
+            Auth existingAuth = authEmail.get();
+
+            if (existingAuth.isEnabled()) { // enabled = true
+                throw new RuntimeException("Email already exists");
+            } else {
+                verifySer.saveCode(existingAuth);
+
+                AuthRes res = new AuthRes();
+                res.setEmail(existingAuth.getEmail());
+                return res;
+            }
+        }
 
         Auth auth = new Auth();
         auth.setEmail(authReq.getEmail());
+        auth.setPassword(passwordEncoder.encode(authReq.getPassword()));
         auth.setName(authReq.getName());
+        auth.setCreatedAt(LocalDateTime.now());
+        auth.setEnabled(false);
         auth.setRole(Role.USER);
-
-        String password = authReq.getPassword();
-        auth.setPassword(passwordEncoder.encode(password));
         Auth saveAuth = rep.save(auth);
 
-        AuthRes res = new AuthRes();
-        res.setId(saveAuth.getId());
-        res.setEmail(saveAuth.getEmail());
+        verifySer.saveCode(saveAuth);
 
+        AuthRes res = new AuthRes();
+        res.setEmail(saveAuth.getEmail());
         return res;
     }
 
@@ -46,6 +63,7 @@ public class AuthSer {
         String email = authReq.getEmail();
         Auth auth = rep.findByEmail(email).orElseThrow(() -> new RuntimeException("Not found email: " + email));
         if (!passwordEncoder.matches(authReq.getPassword(), auth.getPassword())) throw new RuntimeException("Wrong password");
+        if (!auth.isEnabled()) throw new RuntimeException("Auth is not enabled");
 
         // Success
         AuthRes res = new AuthRes();
