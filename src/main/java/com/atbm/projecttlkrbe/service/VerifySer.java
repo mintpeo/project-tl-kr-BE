@@ -20,6 +20,16 @@ public class VerifySer {
     private final MailSer mailSer;
     private final AuthRep authRep;
     private final PasswordEncoder passwordEncoder;
+    private final String LINK = "http://localhost:5173/reset";
+
+    // Send reset pass email
+    public void sendResetPassEmail(String email) {
+        String link = LINK + "?email=" + email;
+
+        String subject = "Yêu cầu đặt lại mật khẩu";
+        String text = "Bấm vào đường link sau để đặt lại mật khẩu của bạn (Có hiệu lực trong 10 phút):\n" + link;
+        mailSer.sendMail(email, subject, text);
+    }
 
     // Verify Code
     public AuthRes verifyCode(VerifyEmailReq req) {
@@ -41,6 +51,16 @@ public class VerifySer {
         return res;
     }
 
+    // Resend verify code
+    public AuthRes sendVerifyEmailAgain(String email) {
+        Auth auth = authRep.findByEmail(email).orElseThrow(() -> new RuntimeException("Not found email: " + email));
+
+        AuthRes res = new AuthRes();
+        res.setEmail(auth.getEmail());
+        saveCode(auth);
+        return res;
+    }
+
     // Save code
     public void saveCode(Auth auth) {
         int code = ThreadLocalRandom.current().nextInt(1000, 10000);
@@ -57,8 +77,8 @@ public class VerifySer {
 
     // Send Verify Email
     private void sendVerifyMail(String email, int code) {
-        String subject = "Verify Mail";
-        String text = "Your verification code: " + code;
+        String subject = "Mã xác minh của bạn";
+        String text = "Mã xác minh của bạn là: " + code + "và sẽ hết hạn sau 5 phút";
         mailSer.sendMail(email, subject, text);
     }
 }
