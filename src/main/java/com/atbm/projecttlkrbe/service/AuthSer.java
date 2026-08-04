@@ -9,6 +9,7 @@ import com.atbm.projecttlkrbe.repository.AuthRep;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -20,6 +21,38 @@ public class AuthSer {
     private final AuthRep rep;
     private final VerifySer verifySer;
     private final PasswordEncoder passwordEncoder;
+
+    // Login with Google
+    // Get JSESSIONID => API User for Google
+    public OAuth2User loginGoogle(OAuth2User user) {
+        return user;
+    }
+
+    // Get JSESSIONID => API User for custom
+    public AuthRes loadUserGoogle(OAuth2User user) {
+        OAuth2User o = loginGoogle(user); // API User Google
+        String email = o.getAttribute("email");
+        String name = o.getAttribute("name");
+        String password = "Google_API";
+
+        // Check email exists
+        Auth auth = rep.findByEmail(email).orElseGet(() -> {
+            // Save User
+            Auth newAuth = new Auth();
+            newAuth.setEmail(email);
+            newAuth.setName(name);
+            newAuth.setPassword(passwordEncoder.encode(password));
+            newAuth.setCreatedAt(LocalDateTime.now());
+            newAuth.setEnabled(true);
+            newAuth.setRole(Role.USER);
+            return rep.save(newAuth);
+        });
+
+        AuthReq req = new AuthReq();
+        req.setEmail(auth.getEmail());
+        req.setPassword(password);
+        return login(req);
+    }
 
     // Reset Password
     public AuthRes resetPass(AuthResetPassReq req) {
@@ -77,8 +110,10 @@ public class AuthSer {
     // Login
     public AuthRes login(AuthReq authReq) {
         String email = authReq.getEmail();
+        String password = authReq.getPassword();
+
         Auth auth = rep.findByEmail(email).orElseThrow(() -> new RuntimeException("Not found email: " + email));
-        if (!passwordEncoder.matches(authReq.getPassword(), auth.getPassword())) throw new RuntimeException("Wrong password");
+        if (!passwordEncoder.matches(password, auth.getPassword())) throw new RuntimeException("Wrong password");
         if (!auth.isEnabled()) throw new RuntimeException("Auth is not enabled");
 
         // Success

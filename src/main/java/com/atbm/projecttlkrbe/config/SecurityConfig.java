@@ -1,5 +1,6 @@
 package com.atbm.projecttlkrbe.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -11,6 +12,8 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    private final String OAUTH_SUCCESS = "http://localhost:5173/google" ;
+
     @Bean
     public SecurityFilterChain security(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
@@ -20,7 +23,10 @@ public class SecurityConfig {
                         .anyRequest()
                         .authenticated()
 
-                );
+                )
+                .oauth2Login(oauth -> oauth.defaultSuccessUrl(OAUTH_SUCCESS, true))
+                .logout(logout -> logout.logoutUrl("/logout")
+                        .logoutSuccessUrl(OAUTH_SUCCESS));
         return http.build();
     }
 
