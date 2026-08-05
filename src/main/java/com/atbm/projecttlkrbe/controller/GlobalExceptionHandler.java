@@ -15,7 +15,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleRuntimeException(RuntimeException ex) {
         Map<String, String> response = new HashMap<>();
         response.put("message", ex.getMessage());
-        // Trả về HTTP 400 thay vì 500/Redirect
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 }

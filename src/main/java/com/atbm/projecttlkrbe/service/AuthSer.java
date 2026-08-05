@@ -6,8 +6,10 @@ import com.atbm.projecttlkrbe.dto.response.AuthRes;
 import com.atbm.projecttlkrbe.model.Auth;
 import com.atbm.projecttlkrbe.model.ResetPass;
 import com.atbm.projecttlkrbe.model.Role;
+import com.atbm.projecttlkrbe.model.User;
 import com.atbm.projecttlkrbe.repository.AuthRep;
 import com.atbm.projecttlkrbe.repository.ResetPassRep;
+import com.atbm.projecttlkrbe.repository.UserRep;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +23,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthSer {
     private final AuthRep rep;
+    private final UserRep userRep;
     private final VerifySer verifySer;
     private final ResetPassRep resetPassRep;
     private final PasswordEncoder passwordEncoder;
@@ -39,18 +42,27 @@ public class AuthSer {
         String password = "Google_API";
 
         // Check email exists
-        Auth auth = rep.findByEmail(email).orElseGet(() -> {
-            // Save User
+        Optional<Auth> authOpt = rep.findByEmail(email);
+        Auth auth;
+        if (authOpt.isEmpty()) {
+            // Save Auth
             Auth newAuth = new Auth();
             newAuth.setEmail(email);
-            newAuth.setName(name);
             newAuth.setPassword(passwordEncoder.encode(password));
             newAuth.setCreatedAt(LocalDateTime.now());
             newAuth.setEnabled(true);
             newAuth.setRole(Role.USER);
             newAuth.setGoogle(true);
-            return rep.save(newAuth);
-        });
+            auth = rep.save(newAuth);
+
+            // Save User
+            User newUser = new User();
+            newUser.setAuth(auth);
+            newUser.setFullName(name);
+            userRep.save(newUser);
+        } else {
+            auth = authOpt.get();
+        }
 
         AuthReq req = new AuthReq();
         req.setEmail(auth.getEmail());
@@ -92,16 +104,23 @@ public class AuthSer {
             }
         }
 
+        // Save Auth
         Auth auth = new Auth();
         auth.setEmail(authReq.getEmail());
         auth.setPassword(passwordEncoder.encode(authReq.getPassword()));
-        auth.setName(authReq.getName());
         auth.setCreatedAt(LocalDateTime.now());
         auth.setEnabled(false);
         auth.setRole(Role.USER);
         auth.setGoogle(false);
         Auth saveAuth = rep.save(auth);
 
+        // Save User
+        User newUser = new User();
+        newUser.setAuth(auth);
+        newUser.setFullName(authReq.getName());
+        userRep.save(newUser);
+
+        // Save Code
         verifySer.saveCode(saveAuth);
 
         // Response
@@ -118,12 +137,13 @@ public class AuthSer {
         Auth auth = rep.findByEmail(email).orElseThrow(() -> new RuntimeException("Not found email: " + email));
         if (!passwordEncoder.matches(password, auth.getPassword())) throw new RuntimeException("Wrong password");
         if (!auth.isEnabled()) throw new RuntimeException("Auth is not enabled");
+        User user = userRep.findByAuthId(auth.getId()).orElseThrow(() -> new RuntimeException("Not found authId: " + auth.getId()));
 
         // Success
         AuthRes res = new AuthRes();
         res.setId(auth.getId());
         res.setEmail(auth.getEmail());
-        res.setName(auth.getName());
+        res.setFullName(user.getFullName());
         res.setRole(auth.getRole().toString());
         res.setGoogle(auth.isGoogle());
 
