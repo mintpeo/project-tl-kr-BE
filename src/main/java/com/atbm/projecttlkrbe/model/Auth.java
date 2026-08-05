@@ -21,4 +21,6 @@ public class Auth {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    private boolean isGoogle;
 }
