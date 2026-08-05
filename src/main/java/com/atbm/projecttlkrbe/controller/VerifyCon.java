@@ -16,9 +16,9 @@ public class VerifyCon {
     private final VerifySer ser;
 
     @PostMapping("/send-reset-pass")
-    public void sendResetPass(@RequestBody Map<String, String> body) {
+    public boolean sendResetPass(@RequestBody Map<String, String> body) {
         String email = body.get("email");
-        ser.sendResetPassEmail(email);
+        return ser.sendResetPassEmail(email);
     }
 
     @PostMapping("/email")

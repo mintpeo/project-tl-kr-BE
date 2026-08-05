@@ -8,4 +8,5 @@ public class AuthRes {
     private String name;
     private String email;
     private String role;
+    private boolean isGoogle;
 }

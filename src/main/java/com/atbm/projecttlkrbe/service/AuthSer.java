@@ -4,8 +4,10 @@ import com.atbm.projecttlkrbe.dto.request.AuthReq;
 import com.atbm.projecttlkrbe.dto.request.AuthResetPassReq;
 import com.atbm.projecttlkrbe.dto.response.AuthRes;
 import com.atbm.projecttlkrbe.model.Auth;
+import com.atbm.projecttlkrbe.model.ResetPass;
 import com.atbm.projecttlkrbe.model.Role;
 import com.atbm.projecttlkrbe.repository.AuthRep;
+import com.atbm.projecttlkrbe.repository.ResetPassRep;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +22,7 @@ import java.util.Optional;
 public class AuthSer {
     private final AuthRep rep;
     private final VerifySer verifySer;
+    private final ResetPassRep resetPassRep;
     private final PasswordEncoder passwordEncoder;
 
     // Login with Google
@@ -45,6 +48,7 @@ public class AuthSer {
             newAuth.setCreatedAt(LocalDateTime.now());
             newAuth.setEnabled(true);
             newAuth.setRole(Role.USER);
+            newAuth.setGoogle(true);
             return rep.save(newAuth);
         });
 
@@ -60,17 +64,15 @@ public class AuthSer {
         String password = req.getPassword();
 
         Auth auth = rep.findByEmail(email).orElseThrow(() -> new RuntimeException("Not found email: " + email));
+        ResetPass r = resetPassRep.findFirstByAuthIdOrderByIdDesc(auth.getId()).orElseThrow(() -> new RuntimeException("Not found authId: " + auth.getId()));
+        if (r.getExpiredAt().isBefore(LocalDateTime.now())) throw new RuntimeException("Link has expired");
+
         auth.setPassword(passwordEncoder.encode(password));
         rep.save(auth);
 
         AuthRes res = new AuthRes();
         res.setEmail(email);
         return res;
-    }
-
-    // Check email
-    private boolean checkEmail(String email) {
-        return rep.existsByEmail(email);
     }
 
     // Sign Up
@@ -97,6 +99,7 @@ public class AuthSer {
         auth.setCreatedAt(LocalDateTime.now());
         auth.setEnabled(false);
         auth.setRole(Role.USER);
+        auth.setGoogle(false);
         Auth saveAuth = rep.save(auth);
 
         verifySer.saveCode(saveAuth);
@@ -122,6 +125,7 @@ public class AuthSer {
         res.setEmail(auth.getEmail());
         res.setName(auth.getName());
         res.setRole(auth.getRole().toString());
+        res.setGoogle(auth.isGoogle());
 
         return res;
     }
