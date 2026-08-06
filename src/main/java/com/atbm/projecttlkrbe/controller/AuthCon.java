@@ -4,7 +4,9 @@ import com.atbm.projecttlkrbe.dto.request.AuthReq;
 import com.atbm.projecttlkrbe.dto.request.AuthResetPassReq;
 import com.atbm.projecttlkrbe.dto.response.AuthRes;
 import com.atbm.projecttlkrbe.service.AuthSer;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +39,12 @@ public class AuthCon {
     }
 
     @PostMapping("/login")
-    public AuthRes login(@RequestBody AuthReq authReq){
-        return ser.login(authReq);
+    public AuthRes loginSession(@RequestBody AuthReq authReq, HttpServletRequest request) {
+        return ser.loginWithSession(authReq, request);
+    }
+
+    @GetMapping("/load-user")
+    public Authentication loadUserLogin(Authentication authentication) {
+        return ser.loadUserLogin(authentication);
     }
 }
