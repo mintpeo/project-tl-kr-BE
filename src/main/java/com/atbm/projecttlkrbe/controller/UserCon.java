@@ -1,5 +1,6 @@
 package com.atbm.projecttlkrbe.controller;
 
+import com.atbm.projecttlkrbe.dto.request.AuthChangePassReq;
 import com.atbm.projecttlkrbe.dto.request.UserChangeProfileReq;
 import com.atbm.projecttlkrbe.dto.response.AuthRes;
 import com.atbm.projecttlkrbe.service.UserSer;
@@ -19,6 +20,11 @@ public class UserCon {
     public AuthRes me(@RequestBody Map<String, String> body) {
         String email = body.get("email");
         return ser.getInfoUser(email);
+    }
+
+    @PatchMapping("/change-pass-profile")
+    public AuthRes changePassword(@RequestBody AuthChangePassReq req) {
+        return ser.changePassword(req);
     }
 
     @PatchMapping("/change-profile")

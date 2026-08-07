@@ -1,5 +1,6 @@
 package com.atbm.projecttlkrbe.controller;
 
+import com.atbm.projecttlkrbe.dto.request.AuthChangePassReq;
 import com.atbm.projecttlkrbe.dto.request.AuthReq;
 import com.atbm.projecttlkrbe.dto.request.AuthResetPassReq;
 import com.atbm.projecttlkrbe.dto.response.AuthRes;
