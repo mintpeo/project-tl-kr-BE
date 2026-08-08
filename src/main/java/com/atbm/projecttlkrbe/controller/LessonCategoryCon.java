@@ -1,5 +1,6 @@
 package com.atbm.projecttlkrbe.controller;
 
+import com.atbm.projecttlkrbe.dto.response.CategoryRes;
 import com.atbm.projecttlkrbe.dto.response.LessonCategoryRes;
 import com.atbm.projecttlkrbe.model.LessonCategory;
 import com.atbm.projecttlkrbe.service.LessonCategorySer;
@@ -16,14 +17,13 @@ import java.util.Map;
 public class LessonCategoryCon {
     private final LessonCategorySer ser;
 
-    @PostMapping("/get-les-cateid")
-    public LessonCategoryRes getLessonCategory(@RequestBody Map<String, Long> body) {
-        long cateId = body.get("cateId");
-        return ser.findLessonWithCategory(cateId);
+    @GetMapping("/{categoryId}")
+    public LessonCategoryRes getLessonCategory(@PathVariable Long categoryId) {
+        return ser.findLessonWithCategory(categoryId);
     }
 
     @GetMapping("/all")
-    public List<LessonCategory> getAllCate() {
+    public List<CategoryRes> getAllCate() {
         return ser.getAllCate();
     }
 

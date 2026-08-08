@@ -1,5 +1,6 @@
 package com.atbm.projecttlkrbe.service;
 
+import com.atbm.projecttlkrbe.dto.response.CategoryRes;
 import com.atbm.projecttlkrbe.dto.response.LessonCategoryRes;
 import com.atbm.projecttlkrbe.dto.response.LessonRes;
 import com.atbm.projecttlkrbe.model.Lesson;
@@ -31,6 +32,7 @@ public class LessonCategorySer {
             lessonRes.setOrderIndex(lesson.getOrderIndex());
             lessonRes.setTitle(lesson.getTitle());
             lessonRes.setThumbnail(lesson.getThumbnail());
+            lessonRes.setDes(lesson.getDescription());
 
             lessonResList.add(lessonRes);
         }
@@ -40,13 +42,27 @@ public class LessonCategorySer {
         res.setId(lc.getId());
         res.setOrderIndex(lc.getOrderIndex());
         res.setCategoryName(lc.getName());
+        res.setCategoryDescription(lc.getDescription());
 
         return res;
     }
 
     // Get List Category
-    public List<LessonCategory> getAllCate() {
-        return rep.findAll();
+    public List<CategoryRes> getAllCate() {
+        List<LessonCategory> list = rep.findAll();
+
+        List<CategoryRes> resList = new ArrayList<>();
+        for (LessonCategory lc : list) {
+            CategoryRes res = new CategoryRes();
+            res.setId(lc.getId());
+            res.setOrderIndex(lc.getOrderIndex());
+            res.setCategoryName(lc.getName());
+            res.setLessonsLength(lc.getLessonCategoryRels().size());
+
+            resList.add(res);
+        }
+
+        return  resList;
     }
 
     // Get List Category Custom

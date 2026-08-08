@@ -9,5 +9,7 @@ public class LessonCategoryRes {
     private long id;
     private int orderIndex;
     private String categoryName;
+    private String categoryDescription;
+    private int lessonsLength;
     private List<LessonRes> lessons;
 }
