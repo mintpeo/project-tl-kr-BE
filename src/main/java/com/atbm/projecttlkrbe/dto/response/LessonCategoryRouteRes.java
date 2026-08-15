@@ -3,8 +3,9 @@ package com.atbm.projecttlkrbe.dto.response;
 import lombok.Data;
 
 @Data
-public class LessonListRes {
+public class LessonCategoryRouteRes {
     private long id;
-    private String title;
     private String des;
+    private String name;
+    private Integer orderIndex;
 }

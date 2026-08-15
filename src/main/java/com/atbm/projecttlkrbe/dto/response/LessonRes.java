@@ -5,8 +5,9 @@ import lombok.Data;
 @Data
 public class LessonRes {
     private long id;
-    private int orderIndex;
+    private Integer orderIndex;
     private String title;
     private String thumbnail;
     private String des;
+    private String youtubeId;
 }

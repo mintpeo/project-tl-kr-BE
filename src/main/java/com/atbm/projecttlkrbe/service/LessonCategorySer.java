@@ -33,6 +33,7 @@ public class LessonCategorySer {
             lessonRes.setTitle(lesson.getTitle());
             lessonRes.setThumbnail(lesson.getThumbnail());
             lessonRes.setDes(lesson.getDescription());
+            lessonRes.setYoutubeId(lesson.getYoutubeId());
 
             lessonResList.add(lessonRes);
         }

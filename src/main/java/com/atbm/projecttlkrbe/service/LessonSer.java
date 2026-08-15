@@ -23,6 +23,7 @@ public class LessonSer {
             LessonListRes res = new LessonListRes();
             res.setId(lesson.getId());
             res.setTitle(lesson.getTitle());
+            res.setDes(lesson.getDescription());
             lessonListRes.add(res);
         }
         return lessonListRes;

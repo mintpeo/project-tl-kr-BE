@@ -17,7 +17,7 @@ public class LessonCategory {
 
     private String name;
     private String description;
-    private int orderIndex;
+    private Integer orderIndex;
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "lessonCategory", cascade = CascadeType.ALL, orphanRemoval = true)

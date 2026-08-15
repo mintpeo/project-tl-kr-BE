@@ -1,29 +1,28 @@
 package com.atbm.projecttlkrbe.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
-@Table(name = "lesson")
+@Table(name = "lesson_route")
 @Data
-public class Lesson {
+public class LessonRoute {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;
+    @JoinColumn(name = "cateRoute_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private LessonCategoryRoute cateRoute;
+
+    private String name;
     private String description;
-    private String thumbnail;
     private Integer orderIndex;
     private boolean isActive;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String youtubeId;
-
-    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<LessonCategoryRel> lessonCategoryRels = new ArrayList<>();
 }
