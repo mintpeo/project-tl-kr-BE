@@ -4,8 +4,10 @@ import com.atbm.projecttlkrbe.dto.response.LessonCategoryRouteRes;
 import com.atbm.projecttlkrbe.dto.response.LessonRouteRes;
 import com.atbm.projecttlkrbe.model.LessonCategoryRoute;
 import com.atbm.projecttlkrbe.model.LessonRoute;
+import com.atbm.projecttlkrbe.model.UserLessonProgress;
 import com.atbm.projecttlkrbe.repository.LessonCategoryRouteRep;
 import com.atbm.projecttlkrbe.repository.LessonRouteRep;
+import com.atbm.projecttlkrbe.repository.UserLessonProgressRep;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,21 +19,7 @@ import java.util.List;
 public class LessonCategoryRouteSer {
     private final LessonCategoryRouteRep rep;
     private final LessonRouteRep lessonRouteRep;
-
-    // Get lesson with category route id
-    public List<LessonRouteRes> getLessonWithCateRouteId(long cateRouteId) {
-        List<LessonRoute> list = lessonRouteRep.findByCateRouteId(cateRouteId);
-        List<LessonRouteRes> res = new ArrayList<>();
-        for (LessonRoute lr : list) {
-            LessonRouteRes lrr = new LessonRouteRes();
-            lrr.setId(lr.getId());
-            lrr.setName(lr.getName());
-            lrr.setYoutubeId(lr.getYoutubeId());
-            lrr.setCateRouteId(cateRouteId);
-            res.add(lrr);
-        }
-        return res;
-    }
+    private final UserLessonProgressRep userLessonProgressRep;
 
     // Get all category route
     public List<LessonCategoryRouteRes> getCateRoute() {
@@ -43,6 +31,20 @@ public class LessonCategoryRouteSer {
             r.setName(l.getName());
             r.setOrderIndex(l.getOrderIndex());
             r.setDes(l.getDescription());
+            // Lesson Size
+            List<LessonRoute> lessons = lessonRouteRep.findByCateRouteId(l.getId());
+            r.setLessonsSize(lessons.size());
+            // Is Learn Category
+            List<LessonRoute> lessonRoutes = lessonRouteRep.findByCateRouteId(l.getId());
+            if (lessonRoutes.isEmpty()) r.setLearned(false);
+            else {
+                int count = 0;
+                for (LessonRoute lr : lessonRoutes) {
+                    UserLessonProgress ulp = userLessonProgressRep.findByLessonRoute_Id(lr.getId()).orElseThrow(() -> new RuntimeException("LessonRoute not found: " + lr.getId()));
+                    if (ulp.isLearned()) count++;
+                }
+                if (count == lessonRoutes.size()) r.setLearned(true);
+            }
             res.add(r);
         }
         return res;

@@ -33,7 +33,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/lesson-cate/**",
                                 "/api/lesson/**",
                                 "/api/predict/**",
-                                "/api/lesson-cate-route/**")
+                                "/api/lesson-cate-route/**",
+                                "/api/lesson-route/**")
                                 .permitAll()
                         .requestMatchers("/api/user/**"
 //                                "/api/lesson-cate/**",

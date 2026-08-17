@@ -8,4 +8,6 @@ public class LessonCategoryRouteRes {
     private String des;
     private String name;
     private Integer orderIndex;
+    private Integer lessonsSize;
+    private boolean isLearned;
 }

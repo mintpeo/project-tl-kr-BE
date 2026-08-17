@@ -14,11 +14,11 @@ public class UserLessonProgress {
     private Long id;
 
     @JoinColumn(name = "user_id")
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
     @JoinColumn(name = "lesson_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     private LessonRoute lessonRoute;
 
     private boolean isLearned;

@@ -8,4 +8,7 @@ public class LessonRouteRes {
     private String name;
     private long cateRouteId;
     private String youtubeId;
+    private String des;
+    private Integer orderIndex;
+    private boolean isLearned;
 }

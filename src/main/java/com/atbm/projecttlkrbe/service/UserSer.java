@@ -33,6 +33,7 @@ public class UserSer {
         res.setFullName(user.getFullName());
         res.setRole(auth.getRole().toString());
         res.setGoogle(auth.isGoogle());
+        res.setUserId(user.getId());
         return res;
     }
 

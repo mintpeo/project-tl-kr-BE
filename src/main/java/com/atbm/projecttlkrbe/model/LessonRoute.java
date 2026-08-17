@@ -20,7 +20,7 @@ public class LessonRoute {
 
     private String name;
     private String description;
-    private Integer orderIndex;
+    private int orderIndex;
     private boolean isActive;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
