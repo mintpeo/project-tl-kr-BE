@@ -1,13 +1,32 @@
 package com.atbm.projecttlkrbe.service;
 
+import com.atbm.projecttlkrbe.model.LessonRoute;
+import com.atbm.projecttlkrbe.model.User;
+import com.atbm.projecttlkrbe.model.UserLessonProgress;
+import com.atbm.projecttlkrbe.repository.LessonRouteRep;
 import com.atbm.projecttlkrbe.repository.UserLessonProgressRep;
+import com.atbm.projecttlkrbe.repository.UserRep;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class UserLessonProgressSer {
     private final UserLessonProgressRep rep;
+    private final UserRep userRep;
+    private final LessonRouteRep lessonRoute;
 
-    // Get
+    public boolean createUserLessonProgress(long userId) {
+        List<LessonRoute> lessonRoutes = lessonRoute.findAll();
+        User user = userRep.findById(userId).orElseThrow(() -> new RuntimeException("User not found: " + userId));
+        for (LessonRoute lr : lessonRoutes) {
+            UserLessonProgress userLessonProgress = new UserLessonProgress();
+            userLessonProgress.setUser(user);
+            userLessonProgress.setLessonRoute(lr);
+            rep.save(userLessonProgress);
+        }
+        return true;
+    }
 }

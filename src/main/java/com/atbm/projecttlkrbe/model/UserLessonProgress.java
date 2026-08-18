@@ -18,7 +18,7 @@ public class UserLessonProgress {
     private User user;
 
     @JoinColumn(name = "lesson_id")
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private LessonRoute lessonRoute;
 
     private boolean isLearned;

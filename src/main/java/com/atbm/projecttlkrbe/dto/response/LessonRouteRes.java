@@ -11,4 +11,5 @@ public class LessonRouteRes {
     private String des;
     private Integer orderIndex;
     private boolean isLearned;
+    private boolean isLearnContent;
 }

@@ -3,42 +3,55 @@ package com.atbm.projecttlkrbe.service;
 import com.atbm.projecttlkrbe.dto.request.AuthChangePassReq;
 import com.atbm.projecttlkrbe.dto.request.UserChangeProfileReq;
 import com.atbm.projecttlkrbe.dto.response.AuthRes;
+import com.atbm.projecttlkrbe.dto.response.UserRes;
 import com.atbm.projecttlkrbe.model.Auth;
 import com.atbm.projecttlkrbe.model.User;
+import com.atbm.projecttlkrbe.model.UserLessonProgress;
 import com.atbm.projecttlkrbe.repository.AuthRep;
+import com.atbm.projecttlkrbe.repository.UserLessonProgressRep;
 import com.atbm.projecttlkrbe.repository.UserRep;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserSer {
     private final UserRep rep;
     private final AuthRep authRep;
+    private final UserLessonProgressRep userLessonProgressRep;
     private final PasswordEncoder passwordEncoder;
 
     // Get Info User
-    public AuthRes getInfoUser(String email) {
+    public UserRes getInfoUser(String email) {
         Auth auth = authRep.findByEmail(email).orElseThrow(() -> new RuntimeException("Not found email: " + email));
         User user = rep.findByAuthId(auth.getId()).orElseThrow(() -> new RuntimeException("Not found authId: " + auth.getId()));
         return responseUser(auth, user);
     }
 
-    // Set up AuthRes
-    private AuthRes responseUser(Auth auth, User user) {
-        AuthRes res = new AuthRes();
+    // Set up User Res
+    public UserRes responseUser(Auth auth, User user) {
+        UserRes res = new UserRes();
         res.setId(auth.getId());
         res.setEmail(auth.getEmail());
         res.setFullName(user.getFullName());
         res.setRole(auth.getRole().toString());
         res.setGoogle(auth.isGoogle());
         res.setUserId(user.getId());
+
+        // Is Lesson Road
+        long lessonId = 1;
+        Optional<UserLessonProgress> ulp = userLessonProgressRep.findByUser_IdAndLessonRoute_Id(user.getId(), lessonId);
+        if (ulp.isPresent()) res.setLessonRoad(true);
+        else res.setLessonRoad(false);
+
         return res;
     }
 
     // Change Pass in Profile
-    public AuthRes changePassword(AuthChangePassReq req) {
+    public UserRes changePassword(AuthChangePassReq req) {
         String email = req.getEmail();
         String oldPassword = req.getOldPassword();
         String newPassword = req.getNewPassword();
@@ -49,7 +62,7 @@ public class UserSer {
             authRep.save(auth);
         } else throw new RuntimeException("Wrong password");
 
-        AuthRes res = new AuthRes();
+        UserRes res = new UserRes();
         res.setEmail(email);
         return res;
     }

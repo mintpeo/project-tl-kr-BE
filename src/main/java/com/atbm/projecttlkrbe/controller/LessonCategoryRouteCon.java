@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/lesson-cate-route")
@@ -17,5 +18,11 @@ public class LessonCategoryRouteCon {
     @GetMapping("/all")
     public List<LessonCategoryRouteRes> getAll() {
         return ser.getCateRoute();
+    }
+
+    @PostMapping("/user")
+    public List<LessonCategoryRouteRes> getCateRouteByUserId(@RequestBody Map<String, Long> body) {
+        long userId = body.get("userId");
+        return ser.getCateRouteByUserId(userId);
     }
 }

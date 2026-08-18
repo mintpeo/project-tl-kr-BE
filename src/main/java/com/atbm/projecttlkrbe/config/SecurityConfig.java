@@ -30,11 +30,14 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**", "/api/verify/**", "/oauth2/**").permitAll()
-                        .requestMatchers("/api/lesson-cate/**",
+                        .requestMatchers("/assets/**",
+                                "/api/lesson-cate/**",
                                 "/api/lesson/**",
                                 "/api/predict/**",
                                 "/api/lesson-cate-route/**",
-                                "/api/lesson-route/**")
+                                "/api/lesson-route/**",
+                                "/api/character/**",
+                                "/api/user-lesson-progress/**")
                                 .permitAll()
                         .requestMatchers("/api/user/**"
 //                                "/api/lesson-cate/**",

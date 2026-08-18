@@ -1,7 +1,6 @@
 package com.atbm.projecttlkrbe.service;
 
 import com.atbm.projecttlkrbe.dto.response.LessonCategoryRouteRes;
-import com.atbm.projecttlkrbe.dto.response.LessonRouteRes;
 import com.atbm.projecttlkrbe.model.LessonCategoryRoute;
 import com.atbm.projecttlkrbe.model.LessonRoute;
 import com.atbm.projecttlkrbe.model.UserLessonProgress;
@@ -26,25 +25,46 @@ public class LessonCategoryRouteSer {
         List<LessonCategoryRoute> list = rep.findAll();
         List<LessonCategoryRouteRes> res = new ArrayList<>();
         for (LessonCategoryRoute l : list) {
+            // Result
             LessonCategoryRouteRes r = new LessonCategoryRouteRes();
-            r.setId(l.getId());
+            long cateRouteId = l.getId();
+            r.setId(cateRouteId);
             r.setName(l.getName());
             r.setOrderIndex(l.getOrderIndex());
             r.setDes(l.getDescription());
             // Lesson Size
-            List<LessonRoute> lessons = lessonRouteRep.findByCateRouteId(l.getId());
+            List<LessonRoute> lessons = lessonRouteRep.findByCateRouteId(cateRouteId);
+            r.setLessonsSize(lessons.size());
+            res.add(r);
+        }
+        return res;
+    }
+
+    public List<LessonCategoryRouteRes> getCateRouteByUserId(long userId) {
+        List<LessonCategoryRoute> list = rep.findAll();
+        List<LessonCategoryRouteRes> res = new ArrayList<>();
+        for (LessonCategoryRoute l : list) {
+            // Result
+            LessonCategoryRouteRes r = new LessonCategoryRouteRes();
+            long cateRouteId = l.getId();
+            r.setId(cateRouteId);
+            r.setName(l.getName());
+            r.setOrderIndex(l.getOrderIndex());
+            r.setDes(l.getDescription());
+            // Lesson Size
+            List<LessonRoute> lessons = lessonRouteRep.findByCateRouteId(cateRouteId);
             r.setLessonsSize(lessons.size());
             // Is Learn Category
-            List<LessonRoute> lessonRoutes = lessonRouteRep.findByCateRouteId(l.getId());
-            if (lessonRoutes.isEmpty()) r.setLearned(false);
+            if (lessons.isEmpty()) r.setLearned(false);
             else {
                 int count = 0;
-                for (LessonRoute lr : lessonRoutes) {
-                    UserLessonProgress ulp = userLessonProgressRep.findByLessonRoute_Id(lr.getId()).orElseThrow(() -> new RuntimeException("LessonRoute not found: " + lr.getId()));
+                for (LessonRoute lr : lessons) {
+                    UserLessonProgress ulp = userLessonProgressRep.findByUser_IdAndLessonRoute_Id(userId, lr.getId()).orElseThrow(() -> new RuntimeException("LessonRoute not found: " + lr.getId()));
                     if (ulp.isLearned()) count++;
                 }
-                if (count == lessonRoutes.size()) r.setLearned(true);
+                if (count == lessons.size()) r.setLearned(true);
             }
+
             res.add(r);
         }
         return res;
