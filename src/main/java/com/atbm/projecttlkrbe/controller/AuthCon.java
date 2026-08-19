@@ -1,8 +1,10 @@
 package com.atbm.projecttlkrbe.controller;
 
+import com.atbm.projecttlkrbe.dto.request.AuthChangePassReq;
 import com.atbm.projecttlkrbe.dto.request.AuthReq;
 import com.atbm.projecttlkrbe.dto.request.AuthResetPassReq;
 import com.atbm.projecttlkrbe.dto.response.AuthRes;
+import com.atbm.projecttlkrbe.dto.response.UserRes;
 import com.atbm.projecttlkrbe.service.AuthSer;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +26,7 @@ public class AuthCon {
     }
 
     @GetMapping("/go-info")
-    public AuthRes loadUser(@AuthenticationPrincipal OAuth2User user) {
+    public UserRes loadUser(@AuthenticationPrincipal OAuth2User user) {
         return ser.loadUserGoogle(user);
     }
 
@@ -39,7 +41,7 @@ public class AuthCon {
     }
 
     @PostMapping("/login")
-    public AuthRes loginSession(@RequestBody AuthReq authReq, HttpServletRequest request) {
+    public UserRes loginSession(@RequestBody AuthReq authReq, HttpServletRequest request) {
         return ser.loginWithSession(authReq, request);
     }
 

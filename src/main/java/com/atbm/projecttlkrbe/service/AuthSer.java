@@ -1,8 +1,10 @@
 package com.atbm.projecttlkrbe.service;
 
+import com.atbm.projecttlkrbe.dto.request.AuthChangePassReq;
 import com.atbm.projecttlkrbe.dto.request.AuthReq;
 import com.atbm.projecttlkrbe.dto.request.AuthResetPassReq;
 import com.atbm.projecttlkrbe.dto.response.AuthRes;
+import com.atbm.projecttlkrbe.dto.response.UserRes;
 import com.atbm.projecttlkrbe.model.Auth;
 import com.atbm.projecttlkrbe.model.ResetPass;
 import com.atbm.projecttlkrbe.model.Role;
@@ -32,6 +34,7 @@ import java.util.Optional;
 public class AuthSer {
     private final AuthRep rep;
     private final UserRep userRep;
+    private final UserSer userSer;
     private final VerifySer verifySer;
     private final ResetPassRep resetPassRep;
     private final PasswordEncoder passwordEncoder;
@@ -44,7 +47,7 @@ public class AuthSer {
     }
 
     // Get JSESSIONID => API User for custom
-    public AuthRes loadUserGoogle(OAuth2User user) {
+    public UserRes loadUserGoogle(OAuth2User user) {
         OAuth2User o = loginGoogle(user); // API User Google
         String email = o.getAttribute("email");
         String name = o.getAttribute("name");
@@ -74,7 +77,7 @@ public class AuthSer {
         }
 
         User userRes = userRep.findByAuthId(auth.getId()).orElseThrow(() -> new RuntimeException("Not found authId: " + auth.getId()));
-        return responseAuth(auth, userRes);
+        return userSer.responseUser(auth, userRes);
     }
 
     // Reset Password
@@ -137,7 +140,7 @@ public class AuthSer {
     }
 
     // Login
-    public AuthRes loginWithSession(AuthReq authReq, HttpServletRequest request) {
+    public UserRes loginWithSession(AuthReq authReq, HttpServletRequest request) {
         String email = authReq.getEmail();
         String password = authReq.getPassword();
 
@@ -160,20 +163,20 @@ public class AuthSer {
         User user = userRep.findByAuthId(auth.getId()).orElseThrow(() -> new RuntimeException("Not found authId: " + auth.getId()));
 
         // Success
-        return responseAuth(auth, user);
+        return userSer.responseUser(auth, user);
     }
 
     public Authentication loadUserLogin(Authentication authentication) {
         return authentication;
     }
 
-    private AuthRes responseAuth(Auth auth, User user) {
-        AuthRes res = new AuthRes();
-        res.setId(auth.getId());
-        res.setEmail(auth.getEmail());
-        res.setFullName(user.getFullName());
-        res.setRole(auth.getRole().toString());
-        res.setGoogle(auth.isGoogle());
-        return res;
-    }
+//    private AuthRes responseAuth(Auth auth, User user) {
+//        AuthRes res = new AuthRes();
+//        res.setId(auth.getId());
+//        res.setEmail(auth.getEmail());
+//        res.setFullName(user.getFullName());
+//        res.setRole(auth.getRole().toString());
+//        res.setGoogle(auth.isGoogle());
+//        return res;
+//    }
 }

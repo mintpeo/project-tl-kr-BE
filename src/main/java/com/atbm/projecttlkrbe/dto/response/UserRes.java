@@ -3,7 +3,7 @@ package com.atbm.projecttlkrbe.dto.response;
 import lombok.Data;
 
 @Data
-public class AuthRes {
+public class UserRes {
     private long id;
     private long userId;
     private String email;
@@ -11,4 +11,5 @@ public class AuthRes {
     private boolean isGoogle;
     private String fullName;
     private String numberPhone;
+    private boolean isLessonRoad;
 }
