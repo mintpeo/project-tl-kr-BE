@@ -5,6 +5,7 @@ import com.atbm.projecttlkrbe.dto.request.UserChangeProfileReq;
 import com.atbm.projecttlkrbe.dto.response.AuthRes;
 import com.atbm.projecttlkrbe.dto.response.UserRes;
 import com.atbm.projecttlkrbe.model.Auth;
+import com.atbm.projecttlkrbe.model.Role;
 import com.atbm.projecttlkrbe.model.User;
 import com.atbm.projecttlkrbe.model.UserLessonProgress;
 import com.atbm.projecttlkrbe.repository.AuthRep;
@@ -71,11 +72,17 @@ public class UserSer {
     public boolean changeProfile(UserChangeProfileReq req) {
         String email = req.getEmail();
         String fullName = req.getFullName();
+        String role = req.getRole();
+        boolean isActive = req.isActive();
 
         Auth auth = authRep.findByEmail(email).orElseThrow(() -> new RuntimeException("Not found email: " + email));
         long authId = auth.getId();
         User user = rep.findByAuthId(authId).orElseThrow(() -> new RuntimeException("Not found authId: " + authId));
-        user.setFullName(fullName);
+
+        if (fullName != null && !fullName.trim().isEmpty()) user.setFullName(fullName);
+        if (role != null && !role.trim().isEmpty()) auth.setRole(Role.valueOf(role));
+//        if (isActive != auth.)
+
         rep.save(user);
         return true;
     }

@@ -31,6 +31,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**", "/api/verify/**", "/oauth2/**").permitAll()
                         .requestMatchers("/assets/**"
+                                , "/api/admin/**"
 //                                "/api/lesson-cate/**",
 //                                "/api/lesson/**",
 //                                "/api/predict/**",
