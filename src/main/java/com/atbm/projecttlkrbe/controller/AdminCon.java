@@ -1,7 +1,9 @@
 package com.atbm.projecttlkrbe.controller;
 
 import com.atbm.projecttlkrbe.dto.request.CreateUserAdminReq;
+import com.atbm.projecttlkrbe.dto.request.UserChangeProfileReq;
 import com.atbm.projecttlkrbe.dto.response.AdminUserRes;
+import com.atbm.projecttlkrbe.model.LessonRoute;
 import com.atbm.projecttlkrbe.service.AdminSer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,11 @@ import java.util.Map;
 public class AdminCon {
     private final AdminSer ser;
 
+    @GetMapping("/all-lessons-road")
+    public List<LessonRoute> getAllLessonRoutes() {
+        return ser.getAllLessonRoutes();
+    }
+
     @DeleteMapping("/delete")
     public boolean deleteUser(@RequestBody Map<String, Long> body) {
         long authId = body.get("authId");
@@ -25,6 +32,11 @@ public class AdminCon {
     @PostMapping("/create")
     public boolean createUser(@RequestBody CreateUserAdminReq req) {
         return ser.createUser(req);
+    }
+
+    @PatchMapping("/change")
+    public boolean changeUser(@RequestBody UserChangeProfileReq req) {
+        return ser.changeProfileUser(req);
     }
 
     @PostMapping("/email")

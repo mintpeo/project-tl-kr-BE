@@ -1,11 +1,14 @@
 package com.atbm.projecttlkrbe.service;
 
 import com.atbm.projecttlkrbe.dto.request.CreateUserAdminReq;
+import com.atbm.projecttlkrbe.dto.request.UserChangeProfileReq;
 import com.atbm.projecttlkrbe.dto.response.AdminUserRes;
 import com.atbm.projecttlkrbe.model.Auth;
+import com.atbm.projecttlkrbe.model.LessonRoute;
 import com.atbm.projecttlkrbe.model.Role;
 import com.atbm.projecttlkrbe.model.User;
 import com.atbm.projecttlkrbe.repository.AuthRep;
+import com.atbm.projecttlkrbe.repository.LessonRouteRep;
 import com.atbm.projecttlkrbe.repository.UserRep;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,8 +24,16 @@ import java.util.Optional;
 public class AdminSer {
     private final AuthRep authRep;
     private final UserRep userRep;
+    private final UserSer userSer;
+    private final LessonRouteRep lessonRouteRep;
     private final PasswordEncoder passwordEncoder;
 
+    // Get Lesson Road
+    public List<LessonRoute> getAllLessonRoutes() {
+        return lessonRouteRep.findAll();
+    }
+
+    // Delete User
     public boolean deleteUser(long authId) {
         Auth auth = authRep.findById(authId).orElseThrow(() -> new RuntimeException("Auth not found: " + authId));
         userRep.findByAuthId(auth.getId()).ifPresent(userRep::delete);
@@ -30,6 +41,7 @@ public class AdminSer {
         return true;
     }
 
+    // Create New User
     public boolean createUser(CreateUserAdminReq req) {
         Optional<Auth> auth = authRep.findByEmail(req.getEmail());
         if (auth.isPresent()) {
@@ -54,6 +66,12 @@ public class AdminSer {
         return true;
     }
 
+    // Change Profile User
+    public boolean changeProfileUser(UserChangeProfileReq req) {
+        return userSer.changeProfile(req);
+    }
+
+    // Search User By Email
     public List<AdminUserRes> getAdminUsersByEmail(String email) {
         List<AdminUserRes> res = new ArrayList<>();
         List<Auth> auths = authRep.findByEmailContainingIgnoreCase(email);
@@ -66,6 +84,7 @@ public class AdminSer {
         return res;
     }
 
+    // Get List User for Admin
     public List<AdminUserRes> getAllAuth() {
         List<Auth> auth = authRep.findAll();
         List<AdminUserRes> res = new ArrayList<>();
@@ -79,6 +98,7 @@ public class AdminSer {
         return res;
     }
 
+    // Get Admin Response
     private AdminUserRes getAdminUserRes(Auth auth, User user) {
         AdminUserRes res = new AdminUserRes();
         long authId = auth.getId();
