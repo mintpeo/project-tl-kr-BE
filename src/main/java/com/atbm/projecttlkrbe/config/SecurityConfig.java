@@ -32,6 +32,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**", "/api/verify/**", "/oauth2/**").permitAll()
                         .requestMatchers("/assets/**"
                                 , "/api/admin/**"
+                                ,"/api/user/**"
 //                                "/api/lesson-cate/**",
 //                                "/api/lesson/**",
 //                                "/api/predict/**",

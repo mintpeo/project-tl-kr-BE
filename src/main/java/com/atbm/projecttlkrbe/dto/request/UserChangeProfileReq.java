@@ -6,6 +6,7 @@ import lombok.Data;
 public class UserChangeProfileReq {
     private String email;
     private String fullName;
+    private String phone;
     private String role;
-    private boolean isActive;
+    private Boolean isActive;
 }

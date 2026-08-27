@@ -169,14 +169,4 @@ public class AuthSer {
     public Authentication loadUserLogin(Authentication authentication) {
         return authentication;
     }
-
-//    private AuthRes responseAuth(Auth auth, User user) {
-//        AuthRes res = new AuthRes();
-//        res.setId(auth.getId());
-//        res.setEmail(auth.getEmail());
-//        res.setFullName(user.getFullName());
-//        res.setRole(auth.getRole().toString());
-//        res.setGoogle(auth.isGoogle());
-//        return res;
-//    }
 }

@@ -72,16 +72,18 @@ public class UserSer {
     public boolean changeProfile(UserChangeProfileReq req) {
         String email = req.getEmail();
         String fullName = req.getFullName();
+        String phone = req.getPhone();
         String role = req.getRole();
-        boolean isActive = req.isActive();
+        Boolean isActive = req.getIsActive();
 
         Auth auth = authRep.findByEmail(email).orElseThrow(() -> new RuntimeException("Not found email: " + email));
         long authId = auth.getId();
         User user = rep.findByAuthId(authId).orElseThrow(() -> new RuntimeException("Not found authId: " + authId));
 
         if (fullName != null && !fullName.trim().isEmpty()) user.setFullName(fullName);
+        if (phone != null && !phone.trim().isEmpty()) user.setNumberPhone(phone);
         if (role != null && !role.trim().isEmpty()) auth.setRole(Role.valueOf(role));
-//        if (isActive != auth.)
+        if (isActive != null && isActive != auth.isEnabled()) auth.setEnabled(isActive);
 
         rep.save(user);
         return true;
