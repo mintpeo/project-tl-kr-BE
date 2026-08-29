@@ -25,13 +25,7 @@ public class AdminSer {
     private final AuthRep authRep;
     private final UserRep userRep;
     private final UserSer userSer;
-    private final LessonRouteRep lessonRouteRep;
     private final PasswordEncoder passwordEncoder;
-
-    // Get Lesson Road
-    public List<LessonRoute> getAllLessonRoutes() {
-        return lessonRouteRep.findAll();
-    }
 
     // Delete User
     public boolean deleteUser(long authId) {

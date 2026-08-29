@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface LessonRouteRep extends JpaRepository<LessonRoute, Long> {
     List<LessonRoute> findByCateRouteId(long cateRouteId);
+    List<LessonRoute> findByNameContainingIgnoreCase(String lessonRoadName);
 }
