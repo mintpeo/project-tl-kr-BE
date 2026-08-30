@@ -1,6 +1,8 @@
 package com.atbm.projecttlkrbe.controller;
 
+import com.atbm.projecttlkrbe.dto.request.AddLessonRouteReq;
 import com.atbm.projecttlkrbe.dto.request.CreateUserAdminReq;
+import com.atbm.projecttlkrbe.dto.request.EditLessonRouteReq;
 import com.atbm.projecttlkrbe.dto.request.UserChangeProfileReq;
 import com.atbm.projecttlkrbe.dto.response.AdminUserRes;
 import com.atbm.projecttlkrbe.dto.response.LessonCategoryRouteRes;
@@ -8,6 +10,7 @@ import com.atbm.projecttlkrbe.model.LessonRoute;
 import com.atbm.projecttlkrbe.service.AdminLessonSer;
 import com.atbm.projecttlkrbe.service.AdminSer;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +23,16 @@ import java.util.Map;
 public class AdminCon {
     private final AdminSer ser;
     private final AdminLessonSer lessonSer;
+
+    @PostMapping("/add-lesson")
+    public boolean addLesson(@RequestBody AddLessonRouteReq req) {
+        return lessonSer.addLessonRoute(req);
+    }
+
+    @PostMapping("/edit-lesson")
+    public boolean editLesson(@RequestBody EditLessonRouteReq req) {
+        return lessonSer.editLessonRoute(req);
+    }
 
     @GetMapping("/all-cate-road")
     public List<LessonCategoryRouteRes> getCateRoute() {
