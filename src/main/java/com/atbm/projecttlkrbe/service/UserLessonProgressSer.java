@@ -32,10 +32,13 @@ public class UserLessonProgressSer {
         return true;
     }
 
+    // Create Road Lesson
     public boolean createUserLessonProgress(long userId) {
         List<LessonRoute> lessonRoutes = lessonRoute.findAll();
         User user = userRep.findById(userId).orElseThrow(() -> new RuntimeException("User not found: " + userId));
         for (LessonRoute lr : lessonRoutes) {
+            if (rep.existsByUser_IdAndLessonRoute_Id(userId, lr.getId())) continue;
+
             UserLessonProgress userLessonProgress = new UserLessonProgress();
             userLessonProgress.setUser(user);
             userLessonProgress.setLessonRoute(lr);

@@ -3,13 +3,8 @@ package com.atbm.projecttlkrbe.service;
 import com.atbm.projecttlkrbe.dto.request.CreateUserAdminReq;
 import com.atbm.projecttlkrbe.dto.request.UserChangeProfileReq;
 import com.atbm.projecttlkrbe.dto.response.AdminUserRes;
-import com.atbm.projecttlkrbe.model.Auth;
-import com.atbm.projecttlkrbe.model.LessonRoute;
-import com.atbm.projecttlkrbe.model.Role;
-import com.atbm.projecttlkrbe.model.User;
-import com.atbm.projecttlkrbe.repository.AuthRep;
-import com.atbm.projecttlkrbe.repository.LessonRouteRep;
-import com.atbm.projecttlkrbe.repository.UserRep;
+import com.atbm.projecttlkrbe.model.*;
+import com.atbm.projecttlkrbe.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,12 +20,32 @@ public class AdminSer {
     private final AuthRep authRep;
     private final UserRep userRep;
     private final UserSer userSer;
+    private final UserLessonProgressRep userLessonProgressRep;
+    private final ResetPassRep resetPassRep;
+    private final VerifyRep verifyRep;
     private final PasswordEncoder passwordEncoder;
 
     // Delete User
     public boolean deleteUser(long authId) {
         Auth auth = authRep.findById(authId).orElseThrow(() -> new RuntimeException("Auth not found: " + authId));
-        userRep.findByAuthId(auth.getId()).ifPresent(userRep::delete);
+        User user = userRep.findByAuthId(authId).orElseThrow(() -> new RuntimeException("User not found: " + authId));
+
+        List<UserLessonProgress> list = userLessonProgressRep.findByUser_Id(user.getId());
+        for (UserLessonProgress ulp : list) {
+            userLessonProgressRep.delete(ulp);
+        }
+
+        List<ResetPass> resetPasses = resetPassRep.findByAuth_Id(authId);
+        for (ResetPass rp : resetPasses) {
+            resetPassRep.delete(rp);
+        }
+
+        List<Verify> verifies = verifyRep.findByAuthId(authId);
+        for (Verify vp : verifies) {
+            verifyRep.delete(vp);
+        }
+
+        userRep.delete(user);
         authRep.delete(auth);
         return true;
     }

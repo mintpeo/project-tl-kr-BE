@@ -24,6 +24,12 @@ public class AdminCon {
     private final AdminSer ser;
     private final AdminLessonSer lessonSer;
 
+    @DeleteMapping("/delete-lesson")
+    public boolean deleteLesson(@RequestBody Map<String, Long> body) {
+        Long lessonId = body.get("lessonId");
+        return lessonSer.deleteLesson(lessonId);
+    }
+
     @PostMapping("/add-lesson")
     public boolean addLesson(@RequestBody AddLessonRouteReq req) {
         return lessonSer.addLessonRoute(req);

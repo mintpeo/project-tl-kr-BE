@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -43,9 +44,8 @@ public class UserSer {
         res.setUserId(user.getId());
 
         // Is Lesson Road
-        long lessonId = 1;
-        Optional<UserLessonProgress> ulp = userLessonProgressRep.findByUser_IdAndLessonRoute_Id(user.getId(), lessonId);
-        if (ulp.isPresent()) res.setLessonRoad(true);
+        List<UserLessonProgress> ulp = userLessonProgressRep.findByUser_Id(user.getId());
+        if (!ulp.isEmpty()) res.setLessonRoad(true);
         else res.setLessonRoad(false);
 
         return res;
