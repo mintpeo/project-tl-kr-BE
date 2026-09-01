@@ -25,4 +25,5 @@ public class LessonRoute {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String youtubeId;
+    private String duration;
 }
