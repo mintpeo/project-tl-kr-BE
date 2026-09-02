@@ -1,12 +1,11 @@
 package com.atbm.projecttlkrbe.controller;
 
-import com.atbm.projecttlkrbe.dto.request.AddLessonRouteReq;
-import com.atbm.projecttlkrbe.dto.request.CreateUserAdminReq;
-import com.atbm.projecttlkrbe.dto.request.EditLessonRouteReq;
-import com.atbm.projecttlkrbe.dto.request.UserChangeProfileReq;
+import com.atbm.projecttlkrbe.dto.request.*;
 import com.atbm.projecttlkrbe.dto.response.AdminUserRes;
 import com.atbm.projecttlkrbe.dto.response.LessonCategoryRouteRes;
+import com.atbm.projecttlkrbe.model.CharacterEntity;
 import com.atbm.projecttlkrbe.model.LessonRoute;
+import com.atbm.projecttlkrbe.service.AdminCharacterSer;
 import com.atbm.projecttlkrbe.service.AdminLessonSer;
 import com.atbm.projecttlkrbe.service.AdminSer;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +22,23 @@ import java.util.Map;
 public class AdminCon {
     private final AdminSer ser;
     private final AdminLessonSer lessonSer;
+    private final AdminCharacterSer characterSer;
+
+    @PostMapping("/edit-char")
+    public boolean editChar(@RequestBody EditCharReq req) {
+        return characterSer.editChar(req);
+    }
+
+    @PostMapping("/search-char")
+    public List<CharacterEntity> searchCharacters(@RequestBody Map<String ,String> body) {
+        String keyword = body.get("keyword");
+        return characterSer.searchCharacters(keyword);
+    }
+
+    @GetMapping("/all-char")
+    public List<CharacterEntity> getAllCharacters() {
+        return characterSer.getAllCharacters();
+    }
 
     @DeleteMapping("/delete-lesson")
     public boolean deleteLesson(@RequestBody Map<String, Long> body) {
