@@ -27,6 +27,7 @@ public class CharacterSer {
                             .name(character.getName())
                             .transcription(character.getTranscription())
                             .strokeUrl(character.getStrokeSvgUrl())
+                            .audioName(character.getFileAudioName())
                             .build())
                     .toList();
         }
@@ -38,6 +39,7 @@ public class CharacterSer {
                         .name(character.getName())
                         .transcription(character.getTranscription())
                         .strokeUrl(character.getStrokeSvgUrl())
+                        .audioName(character.getFileAudioName())
                         .build())
                 .toList();
     }
