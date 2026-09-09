@@ -4,11 +4,9 @@ import com.atbm.projecttlkrbe.dto.request.LessonRouteReq;
 import com.atbm.projecttlkrbe.dto.response.LessonRouteRes;
 import com.atbm.projecttlkrbe.model.LessonContent;
 import com.atbm.projecttlkrbe.model.LessonRoute;
+import com.atbm.projecttlkrbe.model.Quiz;
 import com.atbm.projecttlkrbe.model.UserLessonProgress;
-import com.atbm.projecttlkrbe.repository.LessonContentRep;
-import com.atbm.projecttlkrbe.repository.LessonRouteRep;
-import com.atbm.projecttlkrbe.repository.UserLessonProgressRep;
-import com.atbm.projecttlkrbe.repository.UserRep;
+import com.atbm.projecttlkrbe.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +20,7 @@ public class LessonRouteSer {
     private final LessonRouteRep rep;
     private final UserLessonProgressRep userLessonProgressRep;
     private final LessonContentRep lessonContentRep;
+    private final QuizRep quizRep;
 
     // Get lesson with category route id
     public List<LessonRouteRes> getLessonWithCateRouteId(LessonRouteReq req) {
@@ -41,6 +40,9 @@ public class LessonRouteSer {
             lrr.setCateRouteId(cateRouteId);
             lrr.setDes(lr.getDescription());
             lrr.setOrderIndex(lr.getOrderIndex());
+
+            // Quiz
+            if (lr.getQuiz() != null) lrr.setQuizId(lr.getQuiz().getId());
 
             UserLessonProgress ulp = userLessonProgressRep.findByUser_IdAndLessonRoute_Id(userId, lessonId).orElseThrow(() -> new RuntimeException("Lesson Progress Not Found: " + userId + " " + lessonId));
             lrr.setLearned(ulp.isLearned());
