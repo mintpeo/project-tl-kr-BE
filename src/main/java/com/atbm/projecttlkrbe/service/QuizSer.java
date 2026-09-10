@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,17 +27,20 @@ public class QuizSer {
     public UserQuizAttemptsRes checkUserQuizAttempts(UserQuizAttemptsReq req) {
         UserQuizAttemptsRes res = new UserQuizAttemptsRes();
 
-        List<QuizAttempts> quizAttempts = quizAttemptsRep.findFirstByUser_IdAndQuiz_IdOrderByScoreDesc(req.getUserId(), req.getQuizId());
-        if (quizAttempts.isEmpty()) {
+        Optional<QuizAttempts> quizAttempt = quizAttemptsRep.findFirstByUser_IdAndQuiz_IdOrderByScoreDesc(req.getUserId(), req.getQuizId());
+        if (quizAttempt.isEmpty()) {
             res.setQuizAttempt(false);
             return res;
         }
 
-        for (QuizAttempts qa : quizAttempts) {
-            res.setQuizAttempt(true);
-            res.setScore(qa.getScore());
-            res.setDate(qa.getCompletedDate());
-        }
+        res.setQuizAttempt(true);
+        res.setScore(quizAttempt.get().getScore());
+
+        // Last Near
+        Optional<QuizAttempts> lastQuiz = quizAttemptsRep.findFirstByUser_IdAndQuiz_IdOrderByIdDesc(req.getUserId(), req.getQuizId());
+        res.setLastDate(lastQuiz.get().getCompletedDate());
+        res.setLastScore(lastQuiz.get().getScore());
+
         return res;
     }
 

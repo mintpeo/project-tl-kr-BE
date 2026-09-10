@@ -8,5 +8,6 @@ import java.time.LocalDate;
 public class UserQuizAttemptsRes {
     private boolean isQuizAttempt;
     private int score;
-    private LocalDate date;
+    private LocalDate lastDate;
+    private int lastScore;
 }
