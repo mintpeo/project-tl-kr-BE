@@ -10,4 +10,5 @@ public class CharactersRes {
     private String name;
     private String transcription;
     private String strokeUrl;
+    private String audioName;
 }

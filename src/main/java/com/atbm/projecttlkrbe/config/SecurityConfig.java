@@ -33,12 +33,16 @@ public class SecurityConfig {
                         .requestMatchers("/assets/**"
                                 , "/api/admin/**"
                                 ,"/api/user/**"
+                                ,"/api/user-streak/**"
+                                ,"/api/quiz/**"
+                                ,"/api/practice/**"
+                                ,"/api/progress/**"
 //                                "/api/lesson-cate/**",
 //                                "/api/lesson/**",
 //                                "/api/predict/**",
-//                                "/api/lesson-cate-route/**",
-//                                "/api/lesson-route/**",
-//                                "/api/character/**",
+                                ,"/api/lesson-cate-route/**"
+                                ,"/api/lesson-route/**"
+                                ,"/api/character/**"
 //                                "/api/user-lesson-progress/**"
                         )
                                 .permitAll()

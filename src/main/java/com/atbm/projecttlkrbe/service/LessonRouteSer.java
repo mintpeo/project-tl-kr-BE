@@ -2,13 +2,8 @@ package com.atbm.projecttlkrbe.service;
 
 import com.atbm.projecttlkrbe.dto.request.LessonRouteReq;
 import com.atbm.projecttlkrbe.dto.response.LessonRouteRes;
-import com.atbm.projecttlkrbe.model.LessonContent;
-import com.atbm.projecttlkrbe.model.LessonRoute;
-import com.atbm.projecttlkrbe.model.UserLessonProgress;
-import com.atbm.projecttlkrbe.repository.LessonContentRep;
-import com.atbm.projecttlkrbe.repository.LessonRouteRep;
-import com.atbm.projecttlkrbe.repository.UserLessonProgressRep;
-import com.atbm.projecttlkrbe.repository.UserRep;
+import com.atbm.projecttlkrbe.model.*;
+import com.atbm.projecttlkrbe.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +17,41 @@ public class LessonRouteSer {
     private final LessonRouteRep rep;
     private final UserLessonProgressRep userLessonProgressRep;
     private final LessonContentRep lessonContentRep;
+    private final QuestionRep questionRep;
+
+    public List<LessonRouteRes> getLessonWithCateRouteIdWithParm(Long userId, Long cateRouteId) {
+        List<LessonRoute> list = rep.findByCateRouteId(cateRouteId);
+        List<LessonRouteRes> res = new ArrayList<>();
+        for (LessonRoute lr : list) {
+            // Lesson
+            LessonRouteRes lrr = new LessonRouteRes();
+            long lessonId = lr.getId();
+
+            lrr.setId(lessonId);
+            lrr.setName(lr.getName());
+            lrr.setYoutubeId(lr.getYoutubeId());
+            lrr.setCateRouteId(cateRouteId);
+            lrr.setDes(lr.getDescription());
+            lrr.setOrderIndex(lr.getOrderIndex());
+
+            // Quiz
+            if (lr.getQuiz() != null) {
+                lrr.setQuizId(lr.getQuiz().getId());
+                List<Question> questions = questionRep.findByQuizId(lr.getQuiz().getId());
+                lrr.setTotalQuestions(questions.size());
+            }
+
+            UserLessonProgress ulp = userLessonProgressRep.findByUser_IdAndLessonRoute_Id(userId, lessonId).orElseThrow(() -> new RuntimeException("Lesson Progress Not Found: " + userId + " " + lessonId));
+            lrr.setLearned(ulp.isLearned());
+
+            Optional<LessonContent> lessonContent = lessonContentRep.findByLessonRoute_Id(lessonId);
+            if (lessonContent.isPresent()) lrr.setLearnContent(true);
+            else lrr.setLearnContent(false);
+
+            res.add(lrr);
+        }
+        return res;
+    }
 
     // Get lesson with category route id
     public List<LessonRouteRes> getLessonWithCateRouteId(LessonRouteReq req) {
@@ -41,6 +71,13 @@ public class LessonRouteSer {
             lrr.setCateRouteId(cateRouteId);
             lrr.setDes(lr.getDescription());
             lrr.setOrderIndex(lr.getOrderIndex());
+
+            // Quiz
+            if (lr.getQuiz() != null) {
+                lrr.setQuizId(lr.getQuiz().getId());
+                List<Question> questions = questionRep.findByQuizId(lr.getQuiz().getId());
+                lrr.setTotalQuestions(questions.size());
+            }
 
             UserLessonProgress ulp = userLessonProgressRep.findByUser_IdAndLessonRoute_Id(userId, lessonId).orElseThrow(() -> new RuntimeException("Lesson Progress Not Found: " + userId + " " + lessonId));
             lrr.setLearned(ulp.isLearned());

@@ -62,7 +62,6 @@ public class AdminLessonSer {
         lesson.setDescription(description);
         lesson.setYoutubeId(youtubeId);
         lesson.setCreatedAt(LocalDateTime.now());
-        System.out.println(isActive);
 
         LessonCategoryRoute lessonCate = lessonCategoryRouteRep.findById(cateRouteId).orElseThrow(() -> new RuntimeException("LessonCategoryRoute not found: " + cateRouteId));
         lesson.setCateRoute(lessonCate);

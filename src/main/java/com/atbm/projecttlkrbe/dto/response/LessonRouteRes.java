@@ -12,4 +12,6 @@ public class LessonRouteRes {
     private Integer orderIndex;
     private boolean isLearned;
     private boolean isLearnContent;
+    private Long quizId;
+    private int totalQuestions;
 }

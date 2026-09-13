@@ -1,6 +1,5 @@
 package com.atbm.projecttlkrbe.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -26,4 +25,8 @@ public class LessonRoute {
     private LocalDateTime updatedAt;
     private String youtubeId;
     private String duration;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "quiz_id")
+    private Quiz quiz;
 }

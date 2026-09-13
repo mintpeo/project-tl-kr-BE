@@ -16,6 +16,7 @@ public class CharacterEntity {
     private Integer strokeCount;
     private String strokeSvgUrl;
     private boolean isDouble;
+    private String fileAudioName;
 
     @Enumerated(EnumType.STRING)
     private CharacterType type;
