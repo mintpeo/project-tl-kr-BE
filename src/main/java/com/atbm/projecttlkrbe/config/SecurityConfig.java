@@ -35,12 +35,14 @@ public class SecurityConfig {
                                 ,"/api/user/**"
                                 ,"/api/user-streak/**"
                                 ,"/api/quiz/**"
+                                ,"/api/practice/**"
+                                ,"/api/progress/**"
 //                                "/api/lesson-cate/**",
 //                                "/api/lesson/**",
 //                                "/api/predict/**",
                                 ,"/api/lesson-cate-route/**"
                                 ,"/api/lesson-route/**"
-//                                "/api/character/**",
+                                ,"/api/character/**"
 //                                "/api/user-lesson-progress/**"
                         )
                                 .permitAll()
