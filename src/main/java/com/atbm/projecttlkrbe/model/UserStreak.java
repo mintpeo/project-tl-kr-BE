@@ -16,7 +16,7 @@ public class UserStreak {
 
     private int currentStreak;
     private int longestStreak;
-    private LocalDate lastCheckinDate;
+    private LocalDate lastCheckInDate;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
