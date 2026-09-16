@@ -43,6 +43,7 @@ public class SecurityConfig {
                                 ,"/api/lesson-cate-route/**"
                                 ,"/api/lesson-route/**"
                                 ,"/api/character/**"
+                                ,"/api/audio/**"
 //                                "/api/user-lesson-progress/**"
                         )
                                 .permitAll()
