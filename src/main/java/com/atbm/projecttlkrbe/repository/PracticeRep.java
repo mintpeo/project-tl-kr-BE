@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PracticeRep extends JpaRepository<Practice, Long> {
@@ -31,6 +31,5 @@ public interface PracticeRep extends JpaRepository<Practice, Long> {
 """, nativeQuery = true)
     List<DailyScoreDateRes> getDailyAccuracySince(Long userId, int days);
 
-    List<Practice> findByUser_Id(Long userId);
     List<Practice> findByUserIdOrderByCreatedAtDesc(Long userId);
 }
