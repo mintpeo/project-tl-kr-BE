@@ -24,6 +24,11 @@ public class AdminCon {
     private final AdminLessonSer lessonSer;
     private final AdminCharacterSer characterSer;
 
+    @PostMapping("/update-order-index")
+    public boolean updateOrderIndex(@RequestBody AdminLessonOrderIndexReq req) {
+        return lessonSer.updateOrderIndex(req);
+    }
+
     @PostMapping("/edit-char")
     public boolean editChar(@RequestBody EditCharReq req) {
         return characterSer.editChar(req);

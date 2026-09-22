@@ -1,6 +1,7 @@
 package com.atbm.projecttlkrbe.service;
 
 import com.atbm.projecttlkrbe.dto.request.AddLessonRouteReq;
+import com.atbm.projecttlkrbe.dto.request.AdminLessonOrderIndexReq;
 import com.atbm.projecttlkrbe.dto.request.EditLessonRouteReq;
 import com.atbm.projecttlkrbe.dto.response.LessonCategoryRouteRes;
 import com.atbm.projecttlkrbe.model.LessonCategoryRoute;
@@ -16,6 +17,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +29,29 @@ public class AdminLessonSer {
     private final LessonCategoryRouteSer lessonCategoryRouteSer;
     private final UserLessonProgressRep userLessonProgressRep;
     private final LessonContentRep lessonContentRep;
+
+    // Update Order Index
+    public boolean updateOrderIndex(AdminLessonOrderIndexReq req) {
+        List<Long> lessonsId = req.getLessonsId();
+        if (lessonsId == null || lessonsId.isEmpty()) return false;
+
+        List<LessonRoute> lessons = lessonRouteRep.findByCateRouteId(req.getCateRouteId());
+        Map<Long, LessonRoute> lessonMap = lessons.stream()
+                .collect(Collectors.toMap(LessonRoute::getId, Function.identity()));
+
+        for (int i = 0; i < lessonsId.size(); i++) {
+            Long lessonId = lessonsId.get(i);
+            int newOrderIndex = i + 1;
+
+            LessonRoute lesson = lessonMap.get(lessonId);
+            if (lesson == null) throw new RuntimeException("Bài học không thuộc danh mục này: " + lessonId);
+
+            lesson.setOrderIndex(newOrderIndex);
+        }
+
+        lessonRouteRep.saveAll(lessons);
+        return true;
+    }
 
     // Delete Lesson
     public boolean deleteLesson(long lessonId) {
@@ -48,7 +75,6 @@ public class AdminLessonSer {
     public boolean addLessonRoute(AddLessonRouteReq req) {
         String name = req.getName();
         long cateRouteId = req.getCateRouteId();
-        Integer orderIndex = req.getOrderIndex();
         boolean isActive = req.isActive();
         String duration = req.getDuration();
         String description = req.getDescription();
@@ -56,7 +82,12 @@ public class AdminLessonSer {
 
         LessonRoute lesson = new LessonRoute();
         lesson.setName(name);
-        lesson.setOrderIndex(orderIndex);
+
+        Integer maxOrderIndex = lessonRouteRep.findMaxOrderIndexByCateRouteId(req.getCateRouteId());
+        // Chua co bai hoc nao
+        int nextOrderIndex = (maxOrderIndex != null) ? maxOrderIndex + 1 : 1;
+        lesson.setOrderIndex(nextOrderIndex);
+
         lesson.setActive(isActive);
         lesson.setDuration(duration);
         lesson.setDescription(description);
