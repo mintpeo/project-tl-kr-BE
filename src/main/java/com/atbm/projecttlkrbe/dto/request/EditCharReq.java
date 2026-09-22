@@ -11,5 +11,4 @@ public class EditCharReq {
     private Boolean isDouble;
     private CharacterType type;
     private Integer strokeCount;
-    private String strokeSvgUrl;
 }

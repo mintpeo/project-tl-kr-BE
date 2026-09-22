@@ -9,8 +9,10 @@ import com.atbm.projecttlkrbe.service.AdminCharacterSer;
 import com.atbm.projecttlkrbe.service.AdminLessonSer;
 import com.atbm.projecttlkrbe.service.AdminSer;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -23,6 +25,11 @@ public class AdminCon {
     private final AdminSer ser;
     private final AdminLessonSer lessonSer;
     private final AdminCharacterSer characterSer;
+
+    @PutMapping("/upload-char")
+    public ResponseEntity<String> uploadCharacter(@ModelAttribute UploadFileCharacterReq req, @RequestParam("file") MultipartFile file) {
+        return characterSer.uploadFile(req, file);
+    }
 
     @PostMapping("/update-order-index")
     public boolean updateOrderIndex(@RequestBody AdminLessonOrderIndexReq req) {
