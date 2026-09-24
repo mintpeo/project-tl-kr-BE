@@ -15,7 +15,9 @@ public class CharacterEntity {
     private String transcription;
     private Integer strokeCount;
     private String strokeSvgUrl;
+    private String strokeNotArrowSvgUrl;
     private boolean isDouble;
+    private String imageVersion;
 
     @Enumerated(EnumType.STRING)
     private CharacterType type;

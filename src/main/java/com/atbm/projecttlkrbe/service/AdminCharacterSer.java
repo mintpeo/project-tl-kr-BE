@@ -12,10 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 @Service
@@ -23,26 +19,20 @@ import java.util.List;
 public class AdminCharacterSer {
     private final CharacterSer characterSer;
     private final CharacterRep characterRep;
-    private final Path storageDirVowels = Paths.get("static/assets/svg/vowels");
-    private final Path storageDirConsonants = Paths.get("static/assets/svg/consonants");
+    private final CloudinarySer cloudinarySer;
 
     // Upload File Character
-    public ResponseEntity<String> uploadFile(UploadFileCharacterReq req, MultipartFile newFile) {
-        if (newFile.isEmpty()) return ResponseEntity.badRequest().body("File không được rỗng.");
+    public ResponseEntity<String> uploadFile(UploadFileCharacterReq req, MultipartFile file) {
+        if (file.isEmpty()) return ResponseEntity.badRequest().body("File not null.");
 
-        Path targetDir;
-        if (req.isVowels()) targetDir = storageDirVowels;
-        else targetDir = storageDirConsonants;
-
+        // Spilt
+        String fileName = req.getTargetFileName().trim();
         try {
-            // Thu muc ton tai?
-            if (!Files.exists(targetDir)) return ResponseEntity.badRequest().body("Thư mục không tồn tại.");
-            Path targetFilePath = targetDir.resolve(req.getTargetFileName()).normalize();
-            Files.copy(newFile.getInputStream(), targetFilePath, StandardCopyOption.REPLACE_EXISTING);
-            return ResponseEntity.ok("Cập nhật và ghi đè ảnh thành công");
+            String uploadedUrl = cloudinarySer.uploadAndOver(file, fileName, req.getCharId());
+            return ResponseEntity.ok().body(uploadedUrl);
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Lỗi trong quá trình ghi đè file: " + e.getMessage());
+                    .body("Error upload Cloudinary: " + e.getMessage());
         }
     }
 
