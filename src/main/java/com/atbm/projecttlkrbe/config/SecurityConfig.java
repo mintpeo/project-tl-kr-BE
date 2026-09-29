@@ -39,7 +39,7 @@ public class SecurityConfig {
                                 ,"/api/progress/**"
 //                                "/api/lesson-cate/**",
 //                                "/api/lesson/**",
-//                                "/api/predict/**",
+                                ,"/api/predict/**"
                                 ,"/api/lesson-cate-route/**"
                                 ,"/api/lesson-route/**"
                                 ,"/api/character/**"
