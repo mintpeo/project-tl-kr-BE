@@ -4,22 +4,23 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDate;
-
 @Entity
-@Table(name = "user_streaks")
+@Table(name = "user_level")
 @Data
-public class UserStreak {
+public class UserLevel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int currentStreak;
-    private int longestStreak;
-    private LocalDate lastCheckInDate;
+    @Enumerated(EnumType.STRING)
+    private UserLevelEnum level;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
+
+    private Double accuracyRate;
+    private Integer totalScore;
+    private Integer totalQuestions;
 }

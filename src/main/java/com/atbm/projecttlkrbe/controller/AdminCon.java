@@ -1,16 +1,17 @@
 package com.atbm.projecttlkrbe.controller;
 
 import com.atbm.projecttlkrbe.dto.request.*;
-import com.atbm.projecttlkrbe.dto.response.AdminUserRes;
-import com.atbm.projecttlkrbe.dto.response.LessonCategoryRouteRes;
+import com.atbm.projecttlkrbe.dto.response.*;
 import com.atbm.projecttlkrbe.model.CharacterEntity;
 import com.atbm.projecttlkrbe.model.LessonRoute;
 import com.atbm.projecttlkrbe.service.AdminCharacterSer;
+import com.atbm.projecttlkrbe.service.AdminExerciseSer;
 import com.atbm.projecttlkrbe.service.AdminLessonSer;
 import com.atbm.projecttlkrbe.service.AdminSer;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.parameters.P;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,43 @@ public class AdminCon {
     private final AdminSer ser;
     private final AdminLessonSer lessonSer;
     private final AdminCharacterSer characterSer;
+    private final AdminExerciseSer exerciseSer;
+
+    @DeleteMapping("/delete-question")
+    public boolean deleteQuestion(@RequestBody Map<String, Long> body) {
+        Long questionId = body.get("questionId");
+        return exerciseSer.deleteQuestion(questionId);
+    }
+
+    @PostMapping("/create-question")
+    public boolean createQuestion(@RequestBody AdminCreateQuestionReq req) {
+        return exerciseSer.createQuestion(req);
+    }
+
+    @PatchMapping("/update-question")
+    public boolean updateQuestion(@RequestBody AdminUpdateQuestionReq req) {
+        return exerciseSer.updateQuestion(req);
+    }
+
+    @GetMapping("/get-quizzes")
+    public List<AdminQuizRes> getQuizzes() {
+        return exerciseSer.getQuizzes();
+    }
+
+    @GetMapping("/get-questions")
+    public List<AdminQuestionRes> getQuestions() {
+        return exerciseSer.getQuestions();
+    }
+
+    @PutMapping("/upload-char")
+    public ResponseEntity<String> uploadCharacter(@ModelAttribute UploadFileCharacterReq req, @RequestParam("file") MultipartFile file) {
+        return characterSer.uploadFile(req, file);
+    }
+
+    @PostMapping("/update-order-index")
+    public boolean updateOrderIndex(@RequestBody AdminLessonOrderIndexReq req) {
+        return lessonSer.updateOrderIndex(req);
+    }
 
     @PostMapping("/edit-char")
     public boolean editChar(@RequestBody EditCharReq req) {

@@ -34,9 +34,9 @@ public class QuizCon {
         return ser.handleCorrect(req);
     }
 
-    @PostMapping("/all")
+    @PostMapping("/get-quiz-id")
     public QuizRes getQuiz(@RequestBody Map<String, Long> body) {
         long quizId = body.get("quizId");
-        return ser.getQuizz(quizId);
+        return ser.getQuizById(quizId);
     }
 }

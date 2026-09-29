@@ -78,7 +78,7 @@ public class QuizSer {
     }
 
     // Get Quiz
-    public QuizRes getQuizz(long quizzId) {
+    public QuizRes getQuizById(long quizzId) {
         QuizRes res = new QuizRes();
         // Quiz
         Quiz quiz = rep.findById(quizzId).orElseThrow(() -> new RuntimeException("Quiz Not Found: " + quizzId));
