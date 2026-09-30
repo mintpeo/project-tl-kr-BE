@@ -1,7 +1,7 @@
 package com.atbm.projecttlkrbe.controller;
 
+import com.atbm.projecttlkrbe.dto.response.CharacterRes;
 import com.atbm.projecttlkrbe.dto.response.CharactersRes;
-import com.atbm.projecttlkrbe.model.CharacterEntity;
 import com.atbm.projecttlkrbe.service.CharacterSer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +23,7 @@ public class CharacterCon {
     }
 
     @GetMapping("/all")
-    public List<CharacterEntity> getAllCharacters() {
+    public List<CharacterRes> getAllCharacters() {
         return ser.getAllCharacters();
     }
 }

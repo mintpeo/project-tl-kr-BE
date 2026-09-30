@@ -2,8 +2,10 @@ package com.atbm.projecttlkrbe.service;
 
 import com.atbm.projecttlkrbe.dto.request.EditCharReq;
 import com.atbm.projecttlkrbe.dto.request.UploadFileCharacterReq;
+import com.atbm.projecttlkrbe.dto.response.CharacterRes;
 import com.atbm.projecttlkrbe.model.CharacterEntity;
 import com.atbm.projecttlkrbe.model.CharacterType;
+import com.atbm.projecttlkrbe.repository.AdminStrokeDataRep;
 import com.atbm.projecttlkrbe.repository.CharacterRep;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -63,7 +65,7 @@ public class AdminCharacterSer {
     }
 
     // Get All Characters
-    public List<CharacterEntity> getAllCharacters() {
+    public List<CharacterRes> getAllCharacters() {
         return characterSer.getAllCharacters();
     }
 }

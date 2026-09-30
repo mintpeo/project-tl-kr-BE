@@ -2,14 +2,14 @@ package com.atbm.projecttlkrbe.controller;
 
 import com.atbm.projecttlkrbe.dto.request.*;
 import com.atbm.projecttlkrbe.dto.response.*;
-import com.atbm.projecttlkrbe.model.CharacterEntity;
-import com.atbm.projecttlkrbe.model.LessonRoute;
+import com.atbm.projecttlkrbe.model.*;
 import com.atbm.projecttlkrbe.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +23,28 @@ public class AdminCon {
     private final AdminCharacterSer characterSer;
     private final AdminExerciseSer exerciseSer;
     private final AdminActivitySer activitySer;
+    private final AdminStrokeDataSer strokeDataSer;
+
+    @GetMapping("/all-option-stroke")
+    public List<StrokeOptionData> getAllOptions() {
+        return strokeDataSer.getAllOptions();
+    }
+
+    @GetMapping("/all-stroke")
+    public List<AdminStrokeDataRes> getAllStroke() {
+        return strokeDataSer.getAllStroke();
+    }
+
+    @PutMapping("/upload-active")
+    public boolean approveDaft(@RequestBody Map<String, Long> body) throws IOException {
+        Long charId = body.get("charId");
+        return strokeDataSer.approveDaft(charId);
+    }
+
+    @PutMapping("/upload-pending")
+    public boolean uploadPending(@RequestParam("charId") Long charId, @RequestParam("file") MultipartFile file) throws IOException {
+        return strokeDataSer.uploadDraft(charId, file);
+    }
 
     @GetMapping("/hard-char")
     public List<LowestCharScoreRes> getLowestCharScores() {
@@ -88,7 +110,7 @@ public class AdminCon {
     }
 
     @GetMapping("/all-char")
-    public List<CharacterEntity> getAllCharacters() {
+    public List<CharacterRes> getAllCharacters() {
         return characterSer.getAllCharacters();
     }
 
