@@ -4,10 +4,7 @@ import com.atbm.projecttlkrbe.dto.request.*;
 import com.atbm.projecttlkrbe.dto.response.*;
 import com.atbm.projecttlkrbe.model.CharacterEntity;
 import com.atbm.projecttlkrbe.model.LessonRoute;
-import com.atbm.projecttlkrbe.service.AdminCharacterSer;
-import com.atbm.projecttlkrbe.service.AdminExerciseSer;
-import com.atbm.projecttlkrbe.service.AdminLessonSer;
-import com.atbm.projecttlkrbe.service.AdminSer;
+import com.atbm.projecttlkrbe.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +22,23 @@ public class AdminCon {
     private final AdminLessonSer lessonSer;
     private final AdminCharacterSer characterSer;
     private final AdminExerciseSer exerciseSer;
+    private final AdminActivitySer activitySer;
+
+    @GetMapping("/hard-char")
+    public List<LowestCharScoreRes> getLowestCharScores() {
+        return activitySer.getLowestScoreCharacters();
+    }
+
+    @PostMapping("/daily-activity")
+    public List<AdminActivityDailyRes> getDailyActivity(@RequestBody Map<String, Integer> body) {
+        int days = body.get("days");
+        return activitySer.getAdminActivityDaily(days);
+    }
+
+    @GetMapping("/get-user-activity")
+    public List<AdminActivityUseRes> getUserActivity() {
+        return activitySer.getUserActivity();
+    }
 
     @DeleteMapping("/delete-question")
     public boolean deleteQuestion(@RequestBody Map<String, Long> body) {
