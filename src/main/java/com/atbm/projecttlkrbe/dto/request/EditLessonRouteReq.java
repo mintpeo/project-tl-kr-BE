@@ -12,4 +12,5 @@ public class EditLessonRouteReq {
     private String duration;
     private String description;
     private String youtubeId;
+    private Long quizId;
 }

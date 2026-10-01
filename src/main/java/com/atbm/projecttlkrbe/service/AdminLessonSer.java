@@ -4,14 +4,8 @@ import com.atbm.projecttlkrbe.dto.request.AddLessonRouteReq;
 import com.atbm.projecttlkrbe.dto.request.AdminLessonOrderIndexReq;
 import com.atbm.projecttlkrbe.dto.request.EditLessonRouteReq;
 import com.atbm.projecttlkrbe.dto.response.LessonCategoryRouteRes;
-import com.atbm.projecttlkrbe.model.LessonCategoryRoute;
-import com.atbm.projecttlkrbe.model.LessonContent;
-import com.atbm.projecttlkrbe.model.LessonRoute;
-import com.atbm.projecttlkrbe.model.UserLessonProgress;
-import com.atbm.projecttlkrbe.repository.LessonCategoryRouteRep;
-import com.atbm.projecttlkrbe.repository.LessonContentRep;
-import com.atbm.projecttlkrbe.repository.LessonRouteRep;
-import com.atbm.projecttlkrbe.repository.UserLessonProgressRep;
+import com.atbm.projecttlkrbe.model.*;
+import com.atbm.projecttlkrbe.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +23,7 @@ public class AdminLessonSer {
     private final LessonCategoryRouteSer lessonCategoryRouteSer;
     private final UserLessonProgressRep userLessonProgressRep;
     private final LessonContentRep lessonContentRep;
+    private final QuizRep quizRep;
 
     // Update Order Index
     public boolean updateOrderIndex(AdminLessonOrderIndexReq req) {
@@ -111,6 +106,7 @@ public class AdminLessonSer {
         String duration = req.getDuration();
         String description = req.getDescription();
         String youtubeId = req.getYoutubeId();
+        Long quizId = req.getQuizId();
 
         LessonRoute lesson = lessonRouteRep.findById(lessonId).orElseThrow(() -> new RuntimeException("LessonRoute not found: " + lessonId));
         if (name != null && !name.trim().isEmpty()) lesson.setName(name);
@@ -124,6 +120,17 @@ public class AdminLessonSer {
         if (description != null && !description.trim().isEmpty()) lesson.setDescription(description);
         if (youtubeId != null && !youtubeId.trim().isEmpty()) lesson.setYoutubeId(youtubeId);
         lesson.setUpdatedAt(LocalDateTime.now());
+
+        // Quiz
+        Quiz quiz = quizRep.findById(quizId).orElseThrow(() -> new RuntimeException("Quiz not found: " + quizId));
+        LessonRoute oldLesson = lessonRouteRep.findByQuizId(quizId).orElse(null);
+        if (oldLesson == null) lesson.setQuiz(quiz);
+        else {
+            oldLesson.setQuiz(null);
+            lessonRouteRep.save(oldLesson);
+            lesson.setQuiz(quiz);
+        }
+
         lessonRouteRep.save(lesson);
         return true;
     }
