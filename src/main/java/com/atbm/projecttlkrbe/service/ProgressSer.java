@@ -151,7 +151,7 @@ public class ProgressSer {
     public List<MasterRes> handleMasterList(Long userId) {
         User user = userRep.findById(userId).orElseThrow(() -> new RuntimeException("User not found: " + userId));
         // Xu ly ghi de lien tuc
-        List<Practice> practices = practiceRep.findByUserIdOrderByCreatedAtDesc(user.getId());
+        List<CharAverageScoreRes> pt = practiceRep.getAverageScoreByCharForUser(userId);
         List<CharacterEntity> characters = characterRep.findAll();
 
         // Master = [[name, score]]
@@ -159,11 +159,12 @@ public class ProgressSer {
         for (CharacterEntity c : characters) {
             MasterRes mr = new MasterRes();
             mr.setNameChar(c.getName());
-            mr.setScore(0);
+            mr.setScore(0.0);
 
-            for(Practice p : practices) {
-                if (p.getCharacterId() == null || !p.getCharacterId().equals(c.getId()) || p.getScore() == null) continue;
-                mr.setScore(p.getScore());
+            for(CharAverageScoreRes p : pt) {
+                if (p.getCharacterId() == null || !p.getCharacterId().equals(c.getId()) || p.getAverageScore() == null) continue;
+                mr.setScore(p.getAverageScore());
+                mr.setTotalAttempts(p.getTotalAttempts());
                 break;
             }
 

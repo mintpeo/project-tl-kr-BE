@@ -5,5 +5,6 @@ import lombok.Data;
 @Data
 public class MasterRes {
     private String nameChar;
-    private int score;
+    private Double score;
+    private Long totalAttempts;
 }
