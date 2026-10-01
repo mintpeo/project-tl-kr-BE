@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface AdminStrokeDataRep extends JpaRepository<AdminStrokeData, Long> {
-    Optional<AdminStrokeData> findByCharacterIdOrderByIdDesc(long id);
+    Optional<AdminStrokeData> findByCharacterIdOrderByIdDesc(Long id);
 }

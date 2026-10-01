@@ -1,6 +1,9 @@
 package com.atbm.projecttlkrbe.service;
 
+import com.atbm.projecttlkrbe.dto.request.AdminStrokeOptionDataReq;
+import com.atbm.projecttlkrbe.dto.request.FlagDraftReq;
 import com.atbm.projecttlkrbe.dto.response.AdminStrokeDataRes;
+import com.atbm.projecttlkrbe.dto.response.AdminStrokeOptionDataRes;
 import com.atbm.projecttlkrbe.model.*;
 import com.atbm.projecttlkrbe.repository.AdminStrokeDataRep;
 import com.atbm.projecttlkrbe.repository.AdminStrokeOptionRep;
@@ -25,6 +28,22 @@ public class AdminStrokeDataSer {
     private final CharacterRep characterRep;
     private final CloudinarySer cloudinarySer;
 
+    // Handle Stroke Option Data
+    public boolean handleStrokeOption(List<AdminStrokeOptionDataReq> reqs) {
+        AdminStrokeData data = rep.findById(reqs.get(0).getStrokeId()).orElseThrow(() -> new RuntimeException("Stroke Data Not Found:"));
+        List<AdminStrokeOption> res = new ArrayList<>();
+
+        for (AdminStrokeOptionDataReq item : reqs) {
+            AdminStrokeOption a = new AdminStrokeOption();
+            a.setContent(item.getContent());
+            a.setAccepted(item.isAccepted());
+            a.setAdminStrokeData(data);
+            res.add(a);
+        }
+        optionRep.saveAll(res);
+        return true;
+    }
+
     // Get Admin Stroke Option Data
     public List<StrokeOptionData> getAllOptions() {
         return optionDataRep.findAll();
@@ -32,12 +51,13 @@ public class AdminStrokeDataSer {
 
     // Get all admin stroke data
     public List<AdminStrokeDataRes> getAllStroke() {
-        List<AdminStrokeData> list = rep.findAll();
         List<CharacterEntity> characters = characterRep.findAll();
         List<AdminStrokeDataRes> res = new ArrayList<>();
         for (CharacterEntity character : characters) {
             AdminStrokeData a = rep.findByCharacterIdOrderByIdDesc(character.getId()).orElse(null);
+
             AdminStrokeDataRes r = new AdminStrokeDataRes();
+            r.setCharId(character.getId());
             r.setGlyph(character.getName());
             r.setRomanization(character.getTranscription());
             r.setDeclaredStrokes(character.getStrokeCount());
@@ -51,12 +71,38 @@ public class AdminStrokeDataSer {
                 r.setPendingUrl(a.getPendingUrl());
                 r.setStatus(a.getStatus().toString());
                 r.setUpdatedAt(a.getUpdatedAt());
+
+                List<AdminStrokeOption> options = optionRep.findTop3ByAdminStrokeDataIdOrderByIdDesc(a.getId());
+                List<AdminStrokeOptionDataRes> strokes = new ArrayList<>();
+                for (AdminStrokeOption o : options) {
+                    AdminStrokeOptionDataRes stroke = new AdminStrokeOptionDataRes();
+                    stroke.setContent(o.getContent());
+                    stroke.setAccepted(o.isAccepted());
+                    strokes.add(stroke);
+                }
+                r.setOptions(strokes);
             } else {
                 r.setStatus(AdminStrokeStatus.MISSING.toString());
             }
             res.add(r);
         }
         return res;
+    }
+
+    // Change Status -> Flag
+    public boolean flagDraft(FlagDraftReq req) {
+        AdminStrokeData data = rep.findById(req.getId()).orElseThrow(() -> new RuntimeException("Stroke not found"));
+        // Delete
+        if (data.getPendingPublicId() != null) {
+            cloudinarySer.deleteResource(data.getPendingPublicId());
+            data.setPendingPublicId(null);
+            data.setPendingUrl(null);
+        }
+
+        data.setNote(req.getNote());
+        data.setStatus(AdminStrokeStatus.FLAGGED);
+        rep.save(data);
+        return true;
     }
 
     // Change Status Pending -> Active

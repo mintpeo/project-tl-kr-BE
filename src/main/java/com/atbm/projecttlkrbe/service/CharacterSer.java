@@ -39,12 +39,14 @@ public class CharacterSer {
                 c.setStatus(asd.getStatus().toString());
                 c.setPendingUrl(asd.getPendingUrl());
                 c.setPendingPublicId(asd.getPendingPublicId());
+                c.setNote(asd.getNote());
             } else {
                 c.setImgUrl(null);
                 c.setFileName(null);
                 c.setStatus(null);
                 c.setPendingUrl(null);
                 c.setPendingPublicId(null);
+                c.setNote(null);
             }
 
             res.add(c);

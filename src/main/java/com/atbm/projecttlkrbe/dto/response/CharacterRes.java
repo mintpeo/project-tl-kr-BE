@@ -15,4 +15,5 @@ public class CharacterRes {
     private String status;
     private String pendingUrl;
     private String pendingPublicId;
+    private String note;
 }

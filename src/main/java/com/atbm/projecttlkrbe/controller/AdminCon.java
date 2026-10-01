@@ -6,6 +6,7 @@ import com.atbm.projecttlkrbe.model.*;
 import com.atbm.projecttlkrbe.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,6 +26,11 @@ public class AdminCon {
     private final AdminActivitySer activitySer;
     private final AdminStrokeDataSer strokeDataSer;
 
+    @PostMapping("/handle-option-stroke")
+    public boolean handleOptionStroke(@RequestBody List<AdminStrokeOptionDataReq> reqs) {
+        return strokeDataSer.handleStrokeOption(reqs);
+    }
+
     @GetMapping("/all-option-stroke")
     public List<StrokeOptionData> getAllOptions() {
         return strokeDataSer.getAllOptions();
@@ -35,7 +41,12 @@ public class AdminCon {
         return strokeDataSer.getAllStroke();
     }
 
-    @PutMapping("/upload-active")
+    @PostMapping("/flag-stroke")
+    public boolean flagStroke(@RequestBody FlagDraftReq req) {
+        return strokeDataSer.flagDraft(req);
+    }
+
+    @PostMapping("/upload-active")
     public boolean approveDaft(@RequestBody Map<String, Long> body) throws IOException {
         Long charId = body.get("charId");
         return strokeDataSer.approveDaft(charId);
