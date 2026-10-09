@@ -25,6 +25,23 @@ public class AdminCon {
     private final AdminExerciseSer exerciseSer;
     private final AdminActivitySer activitySer;
     private final AdminStrokeDataSer strokeDataSer;
+    private final AdminTempDataSer tempDataSer;
+
+    @DeleteMapping("/delete-char-temp")
+    public void deleteCharTemp(@RequestBody Map<String, Long> body) {
+        Long id = body.get("id");
+        tempDataSer.deleteCharTemp(id);
+    }
+
+    @PutMapping("/upload-char-temp")
+    public boolean uploadCharTemp(@RequestParam("charId") Long charId, @RequestParam("file") MultipartFile file) throws IOException {
+        return tempDataSer.uploadCharTemp(charId, file);
+    }
+
+    @GetMapping("/all-temp")
+    public List<AdminTempDataRes> getTempData() {
+        return tempDataSer.getAdminTempData();
+    }
 
     @PostMapping("/handle-option-stroke")
     public boolean handleOptionStroke(@RequestBody List<AdminStrokeOptionDataReq> reqs) {

@@ -29,7 +29,10 @@ public class PredictSer {
         String dataUrl = req.getDataUrl();
 
         // "data:image/png;base64,iVBORw0KGgo..." -> tach lay sau dau phay
-        String base64Data = dataUrl.substring(dataUrl.indexOf(",") + 1);
+        int commaIndex = dataUrl.indexOf(",");
+        String base64Data = (commaIndex != -1) ? dataUrl.substring(commaIndex + 1) : dataUrl;
+
+        base64Data = base64Data.replaceAll("\\s+", "");
         byte[] imageBytes = Base64.getDecoder().decode(base64Data);
 
         return callPythonService(imageBytes, "drawing.png");

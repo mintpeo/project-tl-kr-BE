@@ -17,6 +17,15 @@ public class CloudinarySer {
     private final Cloudinary cloudinary;
     private final CharacterRep characterRep;
 
+    // Upload character temp
+    public Map<String, Object> uploadCharTemp(MultipartFile file, String fileName) throws IOException {
+        return cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap(
+                "folder", "temp",
+                "public_id", fileName + "_" + System.currentTimeMillis(),
+                "resource_type", "image"
+        ));
+    }
+
     // Move Pending to Active
     public Map<String, Object> promoteToActive(String pendingPublicId) throws IOException {
         String newPublicId = pendingPublicId.replace("strokes/pending", "strokes/active");
