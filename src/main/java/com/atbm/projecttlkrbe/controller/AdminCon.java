@@ -116,11 +116,6 @@ public class AdminCon {
         return exerciseSer.getQuestions();
     }
 
-    @PutMapping("/upload-char")
-    public ResponseEntity<String> uploadCharacter(@ModelAttribute UploadFileCharacterReq req, @RequestParam("file") MultipartFile file) {
-        return characterSer.uploadFile(req, file);
-    }
-
     @PostMapping("/update-order-index")
     public boolean updateOrderIndex(@RequestBody AdminLessonOrderIndexReq req) {
         return lessonSer.updateOrderIndex(req);

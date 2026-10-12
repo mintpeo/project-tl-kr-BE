@@ -1,7 +1,5 @@
 package com.atbm.projecttlkrbe.service;
 
-import com.atbm.projecttlkrbe.model.CharacterEntity;
-import com.atbm.projecttlkrbe.repository.CharacterRep;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +13,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CloudinarySer {
     private final Cloudinary cloudinary;
-    private final CharacterRep characterRep;
 
     // Upload character temp
     public Map<String, Object> uploadCharTemp(MultipartFile file, String fileName) throws IOException {
@@ -42,23 +39,6 @@ public class CloudinarySer {
                 "public_id", fileName + "_" + System.currentTimeMillis(),
                 "resource_type", "image"
         ));
-    }
-
-    public String uploadAndOver(MultipartFile file, String fileName, Long charId) throws IOException {
-        Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap(
-                "public_id", fileName,
-                "overwrite", true,
-                "unique_filename", false,
-                "use_filename", true,
-                "invalidate", true,
-                "resource_type", "image"
-        ));
-        String version = uploadResult.get("version").toString();
-        CharacterEntity c = characterRep.findById(charId).orElseThrow(() -> new RuntimeException("Character not found: " + charId));
-        c.setImageVersion(version);
-        characterRep.save(c);
-
-        return uploadResult.get("version").toString();
     }
 
     // Delete File
