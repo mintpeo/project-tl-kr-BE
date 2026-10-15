@@ -33,6 +33,7 @@ public class LessonRouteSer {
             lrr.setCateRouteId(cateRouteId);
             lrr.setDes(lr.getDescription());
             lrr.setOrderIndex(lr.getOrderIndex());
+            lrr.setDesFinish(lr.getDesFinish());
 
             // Quiz
             if (lr.getQuiz() != null) {
@@ -61,6 +62,8 @@ public class LessonRouteSer {
         List<LessonRoute> list = rep.findByCateRouteId(cateRouteId);
         List<LessonRouteRes> res = new ArrayList<>();
         for (LessonRoute lr : list) {
+            if (!lr.isActive()) break;
+
             // Lesson
             LessonRouteRes lrr = new LessonRouteRes();
             long lessonId = lr.getId();
@@ -71,6 +74,7 @@ public class LessonRouteSer {
             lrr.setCateRouteId(cateRouteId);
             lrr.setDes(lr.getDescription());
             lrr.setOrderIndex(lr.getOrderIndex());
+            lrr.setDesFinish(lr.getDesFinish());
 
             // Quiz
             if (lr.getQuiz() != null) {

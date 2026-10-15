@@ -9,6 +9,8 @@ import java.util.List;
 public class AdminStrokeDataRes {
     private Long id;
     private Long charId;
+    private String type;
+    private boolean isDouble;
     private String activePublicId;
     private String activeUrl;
     private String note;

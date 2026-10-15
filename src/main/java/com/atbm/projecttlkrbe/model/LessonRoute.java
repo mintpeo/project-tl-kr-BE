@@ -18,13 +18,18 @@ public class LessonRoute {
     private LessonCategoryRoute cateRoute;
 
     private String name;
-    private String description;
     private int orderIndex;
     private boolean isActive;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String youtubeId;
     private String duration;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
+    @Column(columnDefinition = "TEXT")
+    private String desFinish;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "quiz_id")

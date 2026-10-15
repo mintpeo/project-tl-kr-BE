@@ -44,7 +44,7 @@ public class SecurityConfig {
                                 ,"/api/lesson-route/**"
                                 ,"/api/character/**"
                                 ,"/api/audio/**"
-//                                "/api/user-lesson-progress/**"
+                                ,"/api/user-lesson-progress/**"
                         )
                                 .permitAll()
                         .requestMatchers("/api/user/**",

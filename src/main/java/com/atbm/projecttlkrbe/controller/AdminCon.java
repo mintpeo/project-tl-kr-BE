@@ -27,6 +27,16 @@ public class AdminCon {
     private final AdminStrokeDataSer strokeDataSer;
     private final AdminTempDataSer tempDataSer;
 
+    @GetMapping("/lessons-activity")
+    public List<AdminLessonActivityRes> getLessonsActivity() {
+        return activitySer.getLessonActivity();
+    }
+
+    @GetMapping("/user-levels-activity")
+    public List<AdminUserLevelActivityRes> getUserLevelActivity() {
+        return activitySer.getUserLevelActivity();
+    }
+
     @DeleteMapping("/delete-char-temp")
     public void deleteCharTemp(@RequestBody Map<String, Long> body) {
         Long id = body.get("id");
@@ -83,6 +93,12 @@ public class AdminCon {
     public List<AdminActivityDailyRes> getDailyActivity(@RequestBody Map<String, Integer> body) {
         int days = body.get("days");
         return activitySer.getAdminActivityDaily(days);
+    }
+
+    @PostMapping("/get-user-detail-activity")
+    public AdminActivityUseRes getUserActivity(@RequestBody Map<String, String> body) {
+        String email = body.get("email");
+        return activitySer.getUserActivity(email);
     }
 
     @GetMapping("/get-user-activity")
