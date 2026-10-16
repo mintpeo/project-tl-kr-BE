@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -76,4 +77,6 @@ public interface PracticeRep extends JpaRepository<Practice, Long> {
         LIMIT :limit
     """, nativeQuery = true)
     List<LowestCharScoreRes> getLowestScoreCharacters(int limit);
+
+    List<Practice> findByUser_Id(Long userId);
 }

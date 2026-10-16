@@ -61,6 +61,8 @@ public class AdminStrokeDataSer {
             r.setGlyph(character.getName());
             r.setRomanization(character.getTranscription());
             r.setDeclaredStrokes(character.getStrokeCount());
+            r.setType(character.getType().toString());
+            r.setDouble(character.isDouble());
             if (a != null) {
                 // Have Data
                 r.setId(a.getId());

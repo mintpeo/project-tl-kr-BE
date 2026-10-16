@@ -64,7 +64,6 @@ public class CharacterSer {
                             .id(character.getId())
                             .name(character.getName())
                             .transcription(character.getTranscription())
-                            .strokeUrl(character.getStrokeSvgUrl())
                             .build())
                     .toList();
         }
@@ -75,7 +74,6 @@ public class CharacterSer {
                         .id(character.getId())
                         .name(character.getName())
                         .transcription(character.getTranscription())
-                        .strokeUrl(character.getStrokeSvgUrl())
                         .build())
                 .toList();
     }

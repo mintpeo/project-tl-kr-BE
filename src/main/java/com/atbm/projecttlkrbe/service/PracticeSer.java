@@ -35,7 +35,7 @@ public class PracticeSer {
         res.setCreatedAt(LocalDateTime.now());
 
         // Is Pass
-        res.setIsPassed(req.getScore() >= 65);
+        res.setIsPassed(req.getScore() >= 50);
         rep.save(res);
         return true;
     }

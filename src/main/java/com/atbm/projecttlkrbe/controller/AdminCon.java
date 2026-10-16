@@ -25,6 +25,33 @@ public class AdminCon {
     private final AdminExerciseSer exerciseSer;
     private final AdminActivitySer activitySer;
     private final AdminStrokeDataSer strokeDataSer;
+    private final AdminTempDataSer tempDataSer;
+
+    @GetMapping("/lessons-activity")
+    public List<AdminLessonActivityRes> getLessonsActivity() {
+        return activitySer.getLessonActivity();
+    }
+
+    @GetMapping("/user-levels-activity")
+    public List<AdminUserLevelActivityRes> getUserLevelActivity() {
+        return activitySer.getUserLevelActivity();
+    }
+
+    @DeleteMapping("/delete-char-temp")
+    public void deleteCharTemp(@RequestBody Map<String, Long> body) {
+        Long id = body.get("id");
+        tempDataSer.deleteCharTemp(id);
+    }
+
+    @PutMapping("/upload-char-temp")
+    public boolean uploadCharTemp(@RequestParam("charId") Long charId, @RequestParam("file") MultipartFile file) throws IOException {
+        return tempDataSer.uploadCharTemp(charId, file);
+    }
+
+    @GetMapping("/all-temp")
+    public List<AdminTempDataRes> getTempData() {
+        return tempDataSer.getAdminTempData();
+    }
 
     @PostMapping("/handle-option-stroke")
     public boolean handleOptionStroke(@RequestBody List<AdminStrokeOptionDataReq> reqs) {
@@ -68,6 +95,12 @@ public class AdminCon {
         return activitySer.getAdminActivityDaily(days);
     }
 
+    @PostMapping("/get-user-detail-activity")
+    public AdminActivityUseRes getUserActivity(@RequestBody Map<String, String> body) {
+        String email = body.get("email");
+        return activitySer.getUserActivity(email);
+    }
+
     @GetMapping("/get-user-activity")
     public List<AdminActivityUseRes> getUserActivity() {
         return activitySer.getUserActivity();
@@ -97,11 +130,6 @@ public class AdminCon {
     @GetMapping("/get-questions")
     public List<AdminQuestionRes> getQuestions() {
         return exerciseSer.getQuestions();
-    }
-
-    @PutMapping("/upload-char")
-    public ResponseEntity<String> uploadCharacter(@ModelAttribute UploadFileCharacterReq req, @RequestParam("file") MultipartFile file) {
-        return characterSer.uploadFile(req, file);
     }
 
     @PostMapping("/update-order-index")

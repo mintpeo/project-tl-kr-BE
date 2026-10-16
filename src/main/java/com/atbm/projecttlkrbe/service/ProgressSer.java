@@ -7,6 +7,7 @@ import com.atbm.projecttlkrbe.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,9 +23,27 @@ public class ProgressSer {
     private final QuizAttemptsRep quizAttemptsRep;
     private final UserLevelRep userLevelRep;
 
+    // Get Practice Today
+    public GetProgressPracticeTodayRes getProgressPracticeToday(Long userId) {
+        List<Practice> practices = practiceRep.findByUser_Id(userId);
+        LocalDate today = LocalDate.now();
+        List<Practice> todayList = practices.stream().filter(p -> p.getCreatedAt().toLocalDate().equals(today)).toList();
+
+        GetProgressPracticeTodayRes res = new GetProgressPracticeTodayRes();
+        res.setToday(today);
+        res.setTotalPractice(todayList.size());
+        double score = 0;
+        for (Practice practice : todayList) score = score + practice.getScore();
+        double avgScore = score / todayList.size();
+        res.setTotalScore(Math.round(avgScore * 10.0) / 10.0);
+        return res;
+    }
+
     // Get User Level
     public UserLevelRes getUserLevel(Long userId) {
-        UserLevel userLevel = userLevelRep.findByUserId(userId).orElseThrow(() -> new RuntimeException("User not found: " + userId));
+        UserLevel userLevel = userLevelRep.findByUserId(userId).orElse(null);
+        if  (userLevel == null) return null;
+
         int totalScore = userLevel.getTotalScore();
         int totalQuestions = userLevel.getTotalQuestions();
         double accuracyRate = userLevel.getAccuracyRate();
@@ -149,7 +168,9 @@ public class ProgressSer {
 
     // Handle Master List
     public List<MasterRes> handleMasterList(Long userId) {
-        User user = userRep.findById(userId).orElseThrow(() -> new RuntimeException("User not found: " + userId));
+        User user = userRep.findById(userId).orElse(null);
+        if (user == null) new ArrayList<>();
+
         // Xu ly ghi de lien tuc
         List<CharAverageScoreRes> pt = practiceRep.getAverageScoreByCharForUser(userId);
         List<CharacterEntity> characters = characterRep.findAll();
@@ -159,7 +180,7 @@ public class ProgressSer {
         for (CharacterEntity c : characters) {
             MasterRes mr = new MasterRes();
             mr.setNameChar(c.getName());
-            mr.setScore(0.0);
+            mr.setScore(0.0);;
 
             for(CharAverageScoreRes p : pt) {
                 if (p.getCharacterId() == null || !p.getCharacterId().equals(c.getId()) || p.getAverageScore() == null) continue;

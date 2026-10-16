@@ -17,6 +17,12 @@ import java.util.Map;
 public class ProgressCon {
     private final ProgressSer ser;
 
+    @PostMapping("/get-user-practice")
+    public GetProgressPracticeTodayRes getUserPractice(@RequestBody Map<String, Long> body) {
+        Long userId = body.get("userId");
+        return ser.getProgressPracticeToday(userId);
+    }
+
     @PostMapping("/get-user-level")
     public UserLevelRes getUserLevel(@RequestBody Map<String, Long> body) {
         Long userId = body.get("userId");
