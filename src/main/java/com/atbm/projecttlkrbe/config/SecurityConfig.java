@@ -31,14 +31,15 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**", "/api/verify/**", "/oauth2/**").permitAll()
                         .requestMatchers("/assets/**"
+                                ,"/api/admin/all-temp"
                                 , "/api/admin/**"
                                 ,"/api/user/**"
                                 ,"/api/user-streak/**"
                                 ,"/api/quiz/**"
                                 ,"/api/practice/**"
                                 ,"/api/progress/**"
-//                                "/api/lesson-cate/**",
-//                                "/api/lesson/**",
+                                ,"/api/lesson-cate/**"
+                                ,"/api/lesson/**"
                                 ,"/api/predict/**"
                                 ,"/api/lesson-cate-route/**"
                                 ,"/api/lesson-route/**"
@@ -47,14 +48,21 @@ public class SecurityConfig {
                                 ,"/api/user-lesson-progress/**"
                         )
                                 .permitAll()
-                        .requestMatchers("/api/user/**",
-                                "/api/lesson-cate/**",
-                                "/api/lesson/**",
-                                "/api/predict/**",
-                                "/api/lesson-cate-route/**",
-                                "/api/lesson-route/**",
-                                "/api/character/**",
-                                "/api/user-lesson-progress/**"
+                        .requestMatchers("/assets/**"
+//                                ,"/api/admin/**"
+//                                ,"/api/user/**"
+//                                ,"/api/user-streak/**"
+//                                ,"/api/quiz/**"
+//                                ,"/api/practice/**"
+//                                ,"/api/progress/**"
+//                                ,"/api/lesson-cate/**"
+//                                ,"/api/lesson/**"
+//                                ,"/api/predict/**"
+//                                ,"/api/lesson-cate-route/**"
+//                                ,"/api/lesson-route/**"
+//                                ,"/api/character/**"
+//                                ,"/api/audio/**"
+//                                ,"/api/user-lesson-progress/**"
                         ).authenticated()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()

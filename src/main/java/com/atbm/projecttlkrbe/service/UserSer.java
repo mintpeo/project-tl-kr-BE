@@ -42,6 +42,7 @@ public class UserSer {
         res.setRole(auth.getRole().toString());
         res.setGoogle(auth.isGoogle());
         res.setUserId(user.getId());
+        res.setNumberPhone(user.getNumberPhone());
 
         // Is Lesson Road
         List<UserLessonProgress> ulp = userLessonProgressRep.findByUser_Id(user.getId());
@@ -75,11 +76,13 @@ public class UserSer {
         String phone = req.getPhone();
         String role = req.getRole();
         Boolean isActive = req.getIsActive();
+        String changeEmail = req.getChangeEmail();
 
         Auth auth = authRep.findByEmail(email).orElseThrow(() -> new RuntimeException("Not found email: " + email));
         long authId = auth.getId();
         User user = rep.findByAuthId(authId).orElseThrow(() -> new RuntimeException("Not found authId: " + authId));
 
+        if (changeEmail != null && !changeEmail.trim().isEmpty()) auth.setEmail(changeEmail);
         if (fullName != null && !fullName.trim().isEmpty()) user.setFullName(fullName);
         if (phone != null && !phone.trim().isEmpty()) user.setNumberPhone(phone);
         if (role != null && !role.trim().isEmpty()) auth.setRole(Role.valueOf(role));
