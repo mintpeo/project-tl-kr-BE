@@ -24,6 +24,11 @@ public class AdminSer {
     private final ResetPassRep resetPassRep;
     private final VerifyRep verifyRep;
     private final PasswordEncoder passwordEncoder;
+    private final UserStreakRep userStreakRep;
+    private final PracticeRep practiceRep;
+    private final LevelExamRep levelExamRep;
+    private final UserLevelRep userLevelRep;
+    private final QuizAttemptsRep quizAttemptsRep;
 
     // Delete User
     public boolean deleteUser(long authId) {
@@ -34,16 +39,30 @@ public class AdminSer {
         for (UserLessonProgress ulp : list) {
             userLessonProgressRep.delete(ulp);
         }
-
+        // Reset Pass -> Auth
         List<ResetPass> resetPasses = resetPassRep.findByAuth_Id(authId);
-        for (ResetPass rp : resetPasses) {
-            resetPassRep.delete(rp);
-        }
-
+        for (ResetPass rp : resetPasses) resetPassRep.delete(rp);
+        // Verify -> Auth
         List<Verify> verifies = verifyRep.findByAuthId(authId);
-        for (Verify vp : verifies) {
-            verifyRep.delete(vp);
-        }
+        for (Verify vp : verifies) verifyRep.delete(vp);
+        // User streak
+        UserStreak userStreak = userStreakRep.findByUser_Id(user.getId());
+        userStreakRep.delete(userStreak);
+        // Practice
+        List<Practice> practices = practiceRep.findByUser_Id(user.getId());
+        for (Practice p : practices) practiceRep.delete(p);
+        // Level exam
+        List<LevelExam> levelExams = levelExamRep.findByUser_Id(user.getId());
+        for (LevelExam lev : levelExams) levelExamRep.delete(lev);
+        // User Lesson Progress
+        List<UserLessonProgress> userLessonProgresses = userLessonProgressRep.findByUser_Id(user.getId());
+        for (UserLessonProgress ulp : userLessonProgresses) userLessonProgressRep.delete(ulp);
+        // User Level
+        Optional<UserLevel> userLevel = userLevelRep.findByUserId(user.getId());
+        userLevel.ifPresent(userLevelRep::delete);
+        // Quiz attempts
+        List<QuizAttempts> quizAttempts = quizAttemptsRep.findByUser_Id(user.getId());
+        for (QuizAttempts qa : quizAttempts) quizAttemptsRep.delete(qa);
 
         userRep.delete(user);
         authRep.delete(auth);

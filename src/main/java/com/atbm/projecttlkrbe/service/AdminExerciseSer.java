@@ -64,11 +64,13 @@ public class AdminExerciseSer {
         Question question = questionRep.findById(questionId).orElseThrow(() -> new RuntimeException("Question not found: " + questionId));
         String questionName = req.getQuestion();
         boolean isAudio = req.isAudio();
+        boolean isQuestionAudio = req.isQuestionAudio();
 
         if (questionName != null && !questionName.trim().isEmpty()) question.setQuestionText(questionName);
         String questionMediaUrl = req.getQuestionMediaUrl();
         if (questionMediaUrl != null && !questionMediaUrl.trim().isEmpty()) question.setMediaUrl(questionMediaUrl);
         if (isAudio != question.isAudio()) question.setAudio(isAudio);
+        if (isQuestionAudio != question.isQuestionAudio()) question.setQuestionAudio(isQuestionAudio);
 
         // Change Quiz for Question
         Long quizId = req.getQuizId();
@@ -131,6 +133,7 @@ public class AdminExerciseSer {
             ale.setQuestion(question.getQuestionText());
             ale.setQuestionMediaUrl(question.getMediaUrl());
             ale.setAudio(question.isAudio());
+            ale.setQuestionAudio(question.isQuestionAudio());
             // Quiz id
             Quiz quiz = question.getQuiz();
             ale.setQuizId(quiz != null ? quiz.getId() : null);

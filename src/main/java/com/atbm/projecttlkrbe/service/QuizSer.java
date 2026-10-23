@@ -60,7 +60,7 @@ public class QuizSer {
         return true;
     }
 
-    // Handle Correct
+    // Handle List Correct
     public QuestionCorrectLevelExamRes handleListCorrect(ListQuestionsReq req) {
         User user = userRep.findById(req.getUserId()).orElseThrow(() -> new RuntimeException("User not found: " + req.getUserId()));
         QuestionCorrectLevelExamRes res = new QuestionCorrectLevelExamRes();
@@ -108,13 +108,14 @@ public class QuizSer {
         levelExamRep.save(savedLevelExam);
 
         // Save User Level
-        if (passed) userLevelSer.setUserLevel(req.getUserId());
-
-        // Save User Lesson Progress
-        CompleteLessonReq completeLessonReq = new CompleteLessonReq();
-        completeLessonReq.setUserId(req.getUserId());
-        completeLessonReq.setLessonId(29);
-        userLessonProgressSer.setCompleteLesson(completeLessonReq);
+        if (passed) {
+            userLevelSer.setUserLevel(req.getUserId());
+            // Save User Lesson Progress
+            CompleteLessonReq completeLessonReq = new CompleteLessonReq();
+            completeLessonReq.setUserId(req.getUserId());
+            completeLessonReq.setLessonId(29);
+            userLessonProgressSer.setCompleteLesson(completeLessonReq);
+        }
 
         return res;
     }
@@ -162,6 +163,7 @@ public class QuizSer {
             questionRes.setQuestionText(question.getQuestionText());
             questionRes.setQuestionMediaUrl(question.getMediaUrl());
             questionRes.setAudio(question.isAudio());
+            questionRes.setQuestionAudio(question.isQuestionAudio());
 
             List<OptionRes> options = new ArrayList<>();
             for (Option option : question.getOptions()) {

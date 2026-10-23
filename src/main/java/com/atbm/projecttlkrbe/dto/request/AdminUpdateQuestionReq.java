@@ -16,4 +16,7 @@ public class AdminUpdateQuestionReq {
 
     @JsonProperty("isAudio")
     private boolean isAudio;
+
+    @JsonProperty("isQuestionAudio")
+    private boolean isQuestionAudio;
 }

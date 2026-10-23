@@ -14,5 +14,6 @@ public class QuestionRes {
     private String questionText;
     private String questionMediaUrl;
     private boolean isAudio;
+    private boolean isQuestionAudio;
     private List<OptionRes> options;
 }

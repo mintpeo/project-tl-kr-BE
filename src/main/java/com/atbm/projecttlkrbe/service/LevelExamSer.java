@@ -14,6 +14,11 @@ public class LevelExamSer {
 
     // Get Level Exam
     public Optional<LevelExam> getLevelExam(Long userId) {
-        return rep.findFirstByUser_IdOrderByPercentDescIdDesc(userId);
+        Optional<LevelExam> levelExam = rep.findFirstByUser_IdOrderByPercentDescIdDesc(userId);
+        if (levelExam.isPresent()) {
+            LevelExam level = levelExam.get();
+            if (level.isPassed()) return levelExam;
+        }
+        return Optional.empty();
     }
 }

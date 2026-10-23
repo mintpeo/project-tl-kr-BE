@@ -16,4 +16,5 @@ public interface QuizAttemptsRep extends JpaRepository<QuizAttempts, Long> {
     // Get List Only One
     @Query("SELECT DISTINCT q.quiz.id FROM QuizAttempts q WHERE q.user.id = :userId")
     List<Long> findDistinctQuizIdsByUserId(Long userId);
+    List<QuizAttempts> findByUser_Id(Long userId);
 }
