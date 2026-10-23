@@ -1,8 +1,6 @@
 package com.atbm.projecttlkrbe.service;
 
-import com.atbm.projecttlkrbe.dto.request.QuestionReq;
-import com.atbm.projecttlkrbe.dto.request.QuizAttemptsReq;
-import com.atbm.projecttlkrbe.dto.request.UserQuizAttemptsReq;
+import com.atbm.projecttlkrbe.dto.request.*;
 import com.atbm.projecttlkrbe.dto.response.*;
 import com.atbm.projecttlkrbe.model.*;
 import com.atbm.projecttlkrbe.repository.*;
@@ -10,9 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +18,10 @@ public class QuizSer {
     private final OptionRep optionRep;
     private final QuizAttemptsRep quizAttemptsRep;
     private final UserRep userRep;
+    private static final int PASS_PERCENT = 80;
+    private final LevelExamRep levelExamRep;
+    private final UserLevelSer userLevelSer;
+    private final UserLessonProgressSer userLessonProgressSer;
 
     // Check User Have Quiz Attempts
     public UserQuizAttemptsRes checkUserQuizAttempts(UserQuizAttemptsReq req) {
@@ -58,6 +58,65 @@ public class QuizSer {
         res.setCompletedDate(LocalDate.now());
         quizAttemptsRep.save(res);
         return true;
+    }
+
+    // Handle Correct
+    public QuestionCorrectLevelExamRes handleListCorrect(ListQuestionsReq req) {
+        User user = userRep.findById(req.getUserId()).orElseThrow(() -> new RuntimeException("User not found: " + req.getUserId()));
+        QuestionCorrectLevelExamRes res = new QuestionCorrectLevelExamRes();
+        Map<String, ChapterRes> chapters = new HashMap<>();
+        int correct = 0;
+        int total = 0;
+
+        for (AnswersReq answer : req.getAnswers()) {
+            ChapterRes chapter = chapters.get(answer.getChapter());
+            if (chapter == null) {
+                chapter = new ChapterRes();
+                chapters.put(answer.getChapter(), chapter);
+            }
+            chapter.setTotal(chapter.getTotal() + 1);
+            total++;
+
+            if (answer.getOptionId() != null) {
+                QuestionReq question = new QuestionReq();
+                question.setQuestionId(answer.getQuestionId());
+                question.setOptionId(answer.getOptionId());
+
+                GetQuestionCorrectRes correctRes = handleCorrect(question);
+                if (correctRes.isCorrect()) {
+                    chapter.setCorrect(chapter.getCorrect() + 1);
+                    correct++;
+                }
+            }
+        }
+        res.setCorrect(correct);
+        res.setTotal(total);
+        int percent = total == 0 ? 0 : Math.round(correct * 100f / total);
+        res.setPercent(percent);
+        boolean passed = percent >= PASS_PERCENT;
+        res.setPassed(passed);
+        res.setByChapter(chapters);
+
+        // Save Level Exam
+        LevelExam savedLevelExam = new LevelExam();
+        savedLevelExam.setUser(user);
+        savedLevelExam.setTotal(total);
+        savedLevelExam.setCorrect(correct);
+        savedLevelExam.setPassed(passed);
+        savedLevelExam.setPercent(percent);
+        savedLevelExam.setCompleted(LocalDate.now());
+        levelExamRep.save(savedLevelExam);
+
+        // Save User Level
+        if (passed) userLevelSer.setUserLevel(req.getUserId());
+
+        // Save User Lesson Progress
+        CompleteLessonReq completeLessonReq = new CompleteLessonReq();
+        completeLessonReq.setUserId(req.getUserId());
+        completeLessonReq.setLessonId(29);
+        userLessonProgressSer.setCompleteLesson(completeLessonReq);
+
+        return res;
     }
 
     // Handle Correct
@@ -102,6 +161,7 @@ public class QuizSer {
             questionRes.setId(question.getId());
             questionRes.setQuestionText(question.getQuestionText());
             questionRes.setQuestionMediaUrl(question.getMediaUrl());
+            questionRes.setAudio(question.isAudio());
 
             List<OptionRes> options = new ArrayList<>();
             for (Option option : question.getOptions()) {

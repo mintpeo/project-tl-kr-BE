@@ -1,13 +1,16 @@
 package com.atbm.projecttlkrbe.controller;
 
+import com.atbm.projecttlkrbe.dto.request.ListQuestionsReq;
 import com.atbm.projecttlkrbe.dto.request.QuestionReq;
 import com.atbm.projecttlkrbe.dto.request.QuizAttemptsReq;
 import com.atbm.projecttlkrbe.dto.request.UserQuizAttemptsReq;
 import com.atbm.projecttlkrbe.dto.response.GetQuestionCorrectRes;
+import com.atbm.projecttlkrbe.dto.response.QuestionCorrectLevelExamRes;
 import com.atbm.projecttlkrbe.dto.response.QuizRes;
 import com.atbm.projecttlkrbe.dto.response.UserQuizAttemptsRes;
 import com.atbm.projecttlkrbe.service.QuizSer;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -18,6 +21,11 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class QuizCon {
     private final QuizSer ser;
+
+    @PostMapping("/level-exam")
+    public QuestionCorrectLevelExamRes levelExam(@RequestBody ListQuestionsReq req) {
+        return ser.handleListCorrect(req);
+    }
 
     @PostMapping("/get-quiz")
     public UserQuizAttemptsRes checkUserQuizAttempts(@RequestBody UserQuizAttemptsReq req) {

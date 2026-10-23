@@ -19,6 +19,7 @@ public class Question {
 
     private String questionText;
     private String mediaUrl;
+    private boolean isAudio;
 
     @OneToMany(mappedBy = "question")
     private List<Option> options;

@@ -114,7 +114,7 @@ public class AdminLessonSer {
             LessonCategoryRoute lessonCate = lessonCategoryRouteRep.findById(cateRouteId).orElseThrow(() -> new RuntimeException("LessonCategoryRoute not found: " + cateRouteId));
             lesson.setCateRoute(lessonCate);
         }
-        lesson.setOrderIndex(orderIndex);
+        if (orderIndex != lesson.getOrderIndex()) lesson.setOrderIndex(orderIndex);
         if (isActive != null && isActive != lesson.isActive()) lesson.setActive(isActive);
         if (duration != null && !duration.trim().isEmpty()) lesson.setDuration(duration);
         if (description != null && !description.trim().isEmpty()) lesson.setDescription(description);
@@ -122,13 +122,15 @@ public class AdminLessonSer {
         lesson.setUpdatedAt(LocalDateTime.now());
 
         // Quiz
-        Quiz quiz = quizRep.findById(quizId).orElseThrow(() -> new RuntimeException("Quiz not found: " + quizId));
-        LessonRoute oldLesson = lessonRouteRep.findByQuizId(quizId).orElse(null);
-        if (oldLesson == null) lesson.setQuiz(quiz);
-        else {
-            oldLesson.setQuiz(null);
-            lessonRouteRep.save(oldLesson);
-            lesson.setQuiz(quiz);
+        if (quizId != null && !quizId.equals(lesson.getQuiz().getId())) {
+            Quiz quiz = quizRep.findById(quizId).orElseThrow(() -> new RuntimeException("Quiz not found: " + quizId));
+            LessonRoute oldLesson = lessonRouteRep.findByQuizId(quizId).orElse(null);
+            if (oldLesson == null) lesson.setQuiz(quiz);
+            else {
+                oldLesson.setQuiz(null);
+                lessonRouteRep.save(oldLesson);
+                lesson.setQuiz(quiz);
+            }
         }
 
         lessonRouteRep.save(lesson);

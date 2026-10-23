@@ -19,6 +19,28 @@ public class LessonRouteSer {
     private final LessonContentRep lessonContentRep;
     private final QuestionRep questionRep;
 
+    // Get 2 video for Home
+    public List<LessonRouteRes> getLessonHomeRoutes() {
+        Long cateRouteId = 1L;
+        List<LessonRoute> list = rep.findByCateRouteId(cateRouteId);
+        List<LessonRouteRes> res = new ArrayList<>();
+        for (LessonRoute lr : list) {
+            // Lesson
+            LessonRouteRes lrr = new LessonRouteRes();
+            long lessonId = lr.getId();
+
+            lrr.setId(lessonId);
+            lrr.setName(lr.getName());
+            lrr.setYoutubeId(lr.getYoutubeId());
+            lrr.setCateRouteId(cateRouteId);
+            lrr.setDes(lr.getDescription());
+            lrr.setOrderIndex(lr.getOrderIndex());
+            lrr.setDesFinish(lr.getDesFinish());
+            res.add(lrr);
+        }
+        return res;
+    }
+
     public List<LessonRouteRes> getLessonWithCateRouteIdWithParm(Long userId, Long cateRouteId) {
         List<LessonRoute> list = rep.findByCateRouteId(cateRouteId);
         List<LessonRouteRes> res = new ArrayList<>();

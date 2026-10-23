@@ -10,5 +10,6 @@ public class AdminQuestionRes {
     private Long quizId;
     private String question;
     private String questionMediaUrl;
+    private boolean isAudio;
     private List<AdminOptionRes> options;
 }

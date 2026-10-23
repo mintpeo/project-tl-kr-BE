@@ -46,6 +46,8 @@ public class SecurityConfig {
                                 ,"/api/character/**"
                                 ,"/api/audio/**"
                                 ,"/api/user-lesson-progress/**"
+                                ,"/api/user-level/**"
+                                ,"/api/level-exam/**"
                         )
                                 .permitAll()
                         .requestMatchers("/assets/**"

@@ -15,6 +15,7 @@ public class CharacterEntity {
     private String transcription;
     private Integer strokeCount;
     private boolean isDouble;
+    private String audio;
 
     @Enumerated(EnumType.STRING)
     private CharacterType type;

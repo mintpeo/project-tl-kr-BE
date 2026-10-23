@@ -39,6 +39,7 @@ public class AdminExerciseSer {
         res.setQuiz(quiz);
         res.setQuestionText(req.getQuestion());
         res.setMediaUrl(req.getQuestionMediaUrl());
+        res.setAudio(req.isAudio());
         Question savedQuestion = questionRep.save(res);
         // Options
         List<Option> options = new ArrayList<>();
@@ -62,9 +63,12 @@ public class AdminExerciseSer {
         Long questionId = req.getId();
         Question question = questionRep.findById(questionId).orElseThrow(() -> new RuntimeException("Question not found: " + questionId));
         String questionName = req.getQuestion();
+        boolean isAudio = req.isAudio();
+
         if (questionName != null && !questionName.trim().isEmpty()) question.setQuestionText(questionName);
         String questionMediaUrl = req.getQuestionMediaUrl();
         if (questionMediaUrl != null && !questionMediaUrl.trim().isEmpty()) question.setMediaUrl(questionMediaUrl);
+        if (isAudio != question.isAudio()) question.setAudio(isAudio);
 
         // Change Quiz for Question
         Long quizId = req.getQuizId();
@@ -78,6 +82,7 @@ public class AdminExerciseSer {
         }
         return true;
     }
+
     // Update Option
     private boolean updateOption(List<AdminUpdateOptionReq> options, Long questionId, Long optionIdCorrect) {
         if (options == null || options.isEmpty()) return false;
@@ -125,6 +130,7 @@ public class AdminExerciseSer {
             ale.setId(questionId);
             ale.setQuestion(question.getQuestionText());
             ale.setQuestionMediaUrl(question.getMediaUrl());
+            ale.setAudio(question.isAudio());
             // Quiz id
             Quiz quiz = question.getQuiz();
             ale.setQuizId(quiz != null ? quiz.getId() : null);

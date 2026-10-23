@@ -16,4 +16,5 @@ public class CharacterRes {
     private String pendingUrl;
     private String pendingPublicId;
     private String note;
+    private String audioUrl;
 }

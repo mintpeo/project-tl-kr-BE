@@ -1,5 +1,6 @@
 package com.atbm.projecttlkrbe.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.List;
@@ -11,4 +12,7 @@ public class AdminCreateQuestionReq {
     private String questionMediaUrl;
     private int correct;
     private List<AdminCreateOptionReq> options;
+
+    @JsonProperty("isAudio")
+    private boolean isAudio;
 }

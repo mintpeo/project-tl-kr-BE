@@ -23,18 +23,6 @@ public class ProgressCon {
         return ser.getProgressPracticeToday(userId);
     }
 
-    @PostMapping("/get-user-level")
-    public UserLevelRes getUserLevel(@RequestBody Map<String, Long> body) {
-        Long userId = body.get("userId");
-        return ser.getUserLevel(userId);
-    }
-
-    @PostMapping("/user-level")
-    public void setUserLevel(@RequestBody Map<String, Long> body) {
-        Long userId = body.get("userId");
-        ser.setUserLevel(userId);
-    }
-
     @PostMapping("/lesson-progress")
     public List<LessonProgressRes> getLessonProgress(@RequestBody Map<String, Long> body) {
         Long userId = body.get("userId");
