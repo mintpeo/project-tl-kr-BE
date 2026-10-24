@@ -5,8 +5,6 @@ import com.atbm.projecttlkrbe.dto.response.*;
 import com.atbm.projecttlkrbe.model.*;
 import com.atbm.projecttlkrbe.service.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,6 +24,34 @@ public class AdminCon {
     private final AdminActivitySer activitySer;
     private final AdminStrokeDataSer strokeDataSer;
     private final AdminTempDataSer tempDataSer;
+
+    @PostMapping("/update-order-index-cate")
+    public boolean updateOrderIndexCate(@RequestBody AdminCateOrderIndexReq req) {
+        return lessonSer.updateOrderIndexCate(req);
+    }
+
+    @PostMapping("/edit-cate")
+    public boolean editCate(@RequestBody Map<String, Long> body) {
+        Long cateId = body.get("cateId");
+        return lessonSer.editCate(cateId);
+    }
+
+    @DeleteMapping("/delete-cate")
+    public boolean deleteCate(@RequestBody Map<String, Long> body) {
+        Long cateId = body.get("cateId");
+        return lessonSer.deleteCate(cateId);
+    }
+
+    @PostMapping("/create-cate")
+    public boolean createNewCate(@RequestBody Map<String, String> body) {
+        String nameCate = body.get("nameCate");
+        return lessonSer.createNewCate(nameCate);
+    }
+
+    @GetMapping("/all-cate")
+    public List<LessonCategoryRouteRes> getLessonCategoryRoutes() {
+        return lessonSer.getLessonCategoryRoutes();
+    }
 
     @GetMapping("/lessons-activity")
     public List<AdminLessonActivityRes> getLessonsActivity() {
@@ -169,10 +195,10 @@ public class AdminCon {
         return lessonSer.editLessonRoute(req);
     }
 
-    @GetMapping("/all-cate-road")
-    public List<LessonCategoryRouteRes> getCateRoute() {
-        return lessonSer.getCateRoute();
-    }
+//    @GetMapping("/all-cate-road")
+//    public List<LessonCategoryRouteRes> getCateRoute() {
+//        return lessonSer.getCateRoute();
+//    }
 
     @PostMapping("/search-lessons-name")
     public List<LessonRoute> getLessonsByName(@RequestBody Map<String, String> body) {

@@ -1,6 +1,7 @@
 package com.atbm.projecttlkrbe.service;
 
 import com.atbm.projecttlkrbe.dto.request.AddLessonRouteReq;
+import com.atbm.projecttlkrbe.dto.request.AdminCateOrderIndexReq;
 import com.atbm.projecttlkrbe.dto.request.AdminLessonOrderIndexReq;
 import com.atbm.projecttlkrbe.dto.request.EditLessonRouteReq;
 import com.atbm.projecttlkrbe.dto.response.LessonCategoryRouteRes;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -24,6 +26,77 @@ public class AdminLessonSer {
     private final UserLessonProgressRep userLessonProgressRep;
     private final LessonContentRep lessonContentRep;
     private final QuizRep quizRep;
+
+    // Update Order Index Cate
+    public boolean updateOrderIndexCate(AdminCateOrderIndexReq req) {
+        List<Long> cateIds = req.getCateIds();
+        List<LessonCategoryRoute> cateList = lessonCategoryRouteRep.findAll();
+        for (int i = 0; i < cateIds.size(); i++) {
+            Long cateId = cateIds.get(i);
+            int newOrderIndex = i + 1;
+
+            LessonCategoryRoute cate = cateList.stream()
+                    .filter(c -> cateId.equals(c.getId())).findFirst()
+                    .orElse(null);
+            if (cate == null) return false;
+
+            cate.setOrderIndex(newOrderIndex);
+        }
+
+        lessonCategoryRouteRep.saveAll(cateList);
+        return true;
+    }
+
+    // Edit Cate
+    public boolean editCate(Long cateId) {
+        LessonCategoryRoute cate = lessonCategoryRouteRep.findById(cateId).orElse(null);
+        if (cate == null) return false;
+        boolean active = cate.isActive();
+        cate.setActive(!active);
+        lessonCategoryRouteRep.save(cate);
+        return true;
+    }
+
+    // Delete Cate
+    public boolean deleteCate(Long cateId) {
+        LessonCategoryRoute cate = lessonCategoryRouteRep.findById(cateId).orElse(null);
+        if (cate == null) return false;
+        List<LessonRoute> lessonRoutes = lessonRouteRep.findByCateRouteId(cateId);
+        for (LessonRoute lessonRoute : lessonRoutes) lessonRoute.setCateRoute(null);
+        lessonRouteRep.saveAll(lessonRoutes);
+        lessonCategoryRouteRep.delete(cate);
+        return true;
+    }
+
+    // Create New Cate
+    public boolean createNewCate(String cateName) {
+        LessonCategoryRoute newCate = new LessonCategoryRoute();
+        newCate.setName(cateName);
+        newCate.setActive(true);
+        lessonCategoryRouteRep.save(newCate);
+        return true;
+    }
+
+    // Get All Cate
+    public List<LessonCategoryRouteRes> getLessonCategoryRoutes() {
+        List<LessonCategoryRoute> list = lessonCategoryRouteRep.findAll();
+        List<LessonCategoryRouteRes> res = new ArrayList<>();
+        for (LessonCategoryRoute l : list) {
+            // Result
+            LessonCategoryRouteRes r = new LessonCategoryRouteRes();
+            long cateRouteId = l.getId();
+            r.setId(cateRouteId);
+            r.setName(l.getName());
+            r.setOrderIndex(l.getOrderIndex());
+            r.setDes(l.getDescription());
+            r.setActive(l.isActive());
+            // Lesson Size
+            List<LessonRoute> lessons = lessonRouteRep.findByCateRouteId(cateRouteId);
+            r.setLessonsSize(lessons.size());
+            res.add(r);
+        }
+        return res;
+    }
 
     // Update Order Index
     public boolean updateOrderIndex(AdminLessonOrderIndexReq req) {
@@ -101,7 +174,7 @@ public class AdminLessonSer {
         long lessonId = req.getId();
         String name = req.getName();
         Long cateRouteId = req.getCateRouteId();
-        int orderIndex = req.getOrderIndex();
+//        int orderIndex = req.getOrderIndex();
         Boolean isActive = req.getIsActive();
         String duration = req.getDuration();
         String description = req.getDescription();
@@ -114,7 +187,7 @@ public class AdminLessonSer {
             LessonCategoryRoute lessonCate = lessonCategoryRouteRep.findById(cateRouteId).orElseThrow(() -> new RuntimeException("LessonCategoryRoute not found: " + cateRouteId));
             lesson.setCateRoute(lessonCate);
         }
-        if (orderIndex != lesson.getOrderIndex()) lesson.setOrderIndex(orderIndex);
+//        if (orderIndex != lesson.getOrderIndex()) lesson.setOrderIndex(orderIndex);
         if (isActive != null && isActive != lesson.isActive()) lesson.setActive(isActive);
         if (duration != null && !duration.trim().isEmpty()) lesson.setDuration(duration);
         if (description != null && !description.trim().isEmpty()) lesson.setDescription(description);

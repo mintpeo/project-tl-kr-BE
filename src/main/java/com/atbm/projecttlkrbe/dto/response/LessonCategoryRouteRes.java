@@ -10,4 +10,5 @@ public class LessonCategoryRouteRes {
     private Integer orderIndex;
     private Integer lessonsSize;
     private boolean isLearned;
+    private boolean isActive;
 }

@@ -35,7 +35,8 @@ public class LessonCategoryRouteSer {
             r.setOrderIndex(l.getOrderIndex());
             r.setDes(l.getDescription());
             // Lesson Size
-            List<LessonRoute> lessons = lessonRouteRep.findByCateRouteId(cateRouteId);
+            List<LessonRoute> lessons = lessonRouteRep.findByCateRouteId(cateRouteId)
+                    .stream().filter(LessonRoute::isActive).toList();
             r.setLessonsSize(lessons.size());
             res.add(r);
         }
@@ -55,7 +56,8 @@ public class LessonCategoryRouteSer {
             r.setOrderIndex(l.getOrderIndex());
             r.setDes(l.getDescription());
             // Lesson Size
-            List<LessonRoute> lessons = lessonRouteRep.findByCateRouteId(cateRouteId);
+            List<LessonRoute> lessons = lessonRouteRep.findByCateRouteId(cateRouteId)
+                    .stream().filter(LessonRoute::isActive).toList();
             r.setLessonsSize(lessons.size());
             // Is Learn Category
             if (lessons.isEmpty()) r.setLearned(false);

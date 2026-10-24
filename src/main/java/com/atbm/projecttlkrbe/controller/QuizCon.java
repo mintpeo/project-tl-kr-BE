@@ -10,7 +10,6 @@ import com.atbm.projecttlkrbe.dto.response.QuizRes;
 import com.atbm.projecttlkrbe.dto.response.UserQuizAttemptsRes;
 import com.atbm.projecttlkrbe.service.QuizSer;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -21,6 +20,18 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class QuizCon {
     private final QuizSer ser;
+
+    @DeleteMapping("/delete")
+    public boolean delete(@RequestBody Map<String, Long> body) {
+        Long quizId = body.get("quizId");
+        return ser.deleteQuiz(quizId);
+    }
+
+    @PostMapping("/add-new-quiz")
+    public boolean addNewQuiz(@RequestBody Map<String, String> body) {
+        String nameQuiz = body.get("nameQuiz");
+        return ser.addNewQuiz(nameQuiz);
+    }
 
     @PostMapping("/level-exam")
     public QuestionCorrectLevelExamRes levelExam(@RequestBody ListQuestionsReq req) {

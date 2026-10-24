@@ -23,6 +23,26 @@ public class QuizSer {
     private final UserLevelSer userLevelSer;
     private final UserLessonProgressSer userLessonProgressSer;
 
+    // Delete Quiz
+    public boolean deleteQuiz(Long quizId) {
+        Quiz quiz = rep.findById(quizId).orElse(null);
+        if (quiz == null) return false;
+
+        List<Question> questions = questionRep.findByQuizId(quizId);
+        for (Question question : questions) question.setQuiz(null);
+        questionRep.saveAll(questions);
+        rep.delete(quiz);
+        return true;
+    }
+
+    // Add New Quiz
+    public boolean addNewQuiz(String nameQuiz) {
+        Quiz quiz = new Quiz();
+        quiz.setTitle(nameQuiz);
+        rep.save(quiz);
+        return true;
+    }
+
     // Check User Have Quiz Attempts
     public UserQuizAttemptsRes checkUserQuizAttempts(UserQuizAttemptsReq req) {
         UserQuizAttemptsRes res = new UserQuizAttemptsRes();
