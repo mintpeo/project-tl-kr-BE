@@ -47,7 +47,7 @@ public class AdminSer {
         for (Verify vp : verifies) verifyRep.delete(vp);
         // User streak
         UserStreak userStreak = userStreakRep.findByUser_Id(user.getId());
-        userStreakRep.delete(userStreak);
+        if (userStreak != null) userStreakRep.delete(userStreak);
         // Practice
         List<Practice> practices = practiceRep.findByUser_Id(user.getId());
         for (Practice p : practices) practiceRep.delete(p);

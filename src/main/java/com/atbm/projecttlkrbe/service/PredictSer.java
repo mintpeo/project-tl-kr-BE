@@ -35,14 +35,18 @@ public class PredictSer {
         base64Data = base64Data.replaceAll("\\s+", "");
         byte[] imageBytes = Base64.getDecoder().decode(base64Data);
 
-        return callPythonService(imageBytes, "drawing.png");
+        return callPythonService(imageBytes, "drawing.png", req.getExpected());
+    }
+
+    public ResponseEntity<String> predict(MultipartFile file, String expected) throws IOException {
+        return callPythonService(file.getBytes(), file.getOriginalFilename(), expected);
     }
 
     public ResponseEntity<String> predict(MultipartFile file) throws IOException {
-        return callPythonService(file.getBytes(), file.getOriginalFilename());
+        return predict(file, null);
     }
 
-    private ResponseEntity<String> callPythonService(byte[] imageBytes, String filename) {
+    private ResponseEntity<String> callPythonService(byte[] imageBytes, String filename, String expected) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
@@ -53,6 +57,10 @@ public class PredictSer {
                 return filename;
             }
         });
+
+        if (expected != null && !expected.isBlank()) {
+            body.add("expected", expected);
+        }
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 

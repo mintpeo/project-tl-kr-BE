@@ -142,7 +142,7 @@ public class AdminLessonSer {
     // Add Lesson
     public boolean addLessonRoute(AddLessonRouteReq req) {
         String name = req.getName();
-        long cateRouteId = req.getCateRouteId();
+        Long cateRouteId = req.getCateRouteId();
         boolean isActive = req.isActive();
         String duration = req.getDuration();
         String description = req.getDescription();

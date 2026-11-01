@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class AddLessonRouteReq {
     private String name;
-    private long cateRouteId;
+    private Long cateRouteId;
     private String duration;
     private String description;
     private String youtubeId;
