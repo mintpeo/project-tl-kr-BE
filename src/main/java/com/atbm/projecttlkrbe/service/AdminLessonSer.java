@@ -1,9 +1,6 @@
 package com.atbm.projecttlkrbe.service;
 
-import com.atbm.projecttlkrbe.dto.request.AddLessonRouteReq;
-import com.atbm.projecttlkrbe.dto.request.AdminCateOrderIndexReq;
-import com.atbm.projecttlkrbe.dto.request.AdminLessonOrderIndexReq;
-import com.atbm.projecttlkrbe.dto.request.EditLessonRouteReq;
+import com.atbm.projecttlkrbe.dto.request.*;
 import com.atbm.projecttlkrbe.dto.response.LessonCategoryRouteRes;
 import com.atbm.projecttlkrbe.model.*;
 import com.atbm.projecttlkrbe.repository.*;
@@ -26,6 +23,17 @@ public class AdminLessonSer {
     private final UserLessonProgressRep userLessonProgressRep;
     private final LessonContentRep lessonContentRep;
     private final QuizRep quizRep;
+    private final ExamConfigSer examConfigSer;
+
+    // Edit Exam Config
+    public boolean editExamConfig(AdminExamConfigReq req) {
+        return examConfigSer.editExamConfig(req);
+    }
+
+    // Setup Exam Config
+    public ExamConfig getExamConfig() {
+        return examConfigSer.getExamConfig();
+    }
 
     // Update Order Index Cate
     public boolean updateOrderIndexCate(AdminCateOrderIndexReq req) {
@@ -175,6 +183,7 @@ public class AdminLessonSer {
         String name = req.getName();
         Long cateRouteId = req.getCateRouteId();
 //        int orderIndex = req.getOrderIndex();
+        // Sure Form get all data on BE so code on down not valid
         Boolean isActive = req.getIsActive();
         String duration = req.getDuration();
         String description = req.getDescription();
@@ -188,10 +197,14 @@ public class AdminLessonSer {
             lesson.setCateRoute(lessonCate);
         }
 //        if (orderIndex != lesson.getOrderIndex()) lesson.setOrderIndex(orderIndex);
-        if (isActive != null && isActive != lesson.isActive()) lesson.setActive(isActive);
-        if (duration != null && !duration.trim().isEmpty()) lesson.setDuration(duration);
-        if (description != null && !description.trim().isEmpty()) lesson.setDescription(description);
-        if (youtubeId != null && !youtubeId.trim().isEmpty()) lesson.setYoutubeId(youtubeId);
+//        if (isActive != null && isActive != lesson.isActive()) lesson.setActive(isActive);
+//        if (duration != null && !duration.trim().isEmpty()) lesson.setDuration(duration);
+//        if (description != null && !description.trim().isEmpty()) lesson.setDescription(description);
+//        if (youtubeId != null && !youtubeId.trim().isEmpty()) lesson.setYoutubeId(youtubeId);
+        lesson.setActive(isActive);
+        lesson.setDuration(duration);
+        lesson.setDescription(description);
+        lesson.setYoutubeId(youtubeId);
         lesson.setUpdatedAt(LocalDateTime.now());
 
         // Quiz

@@ -29,10 +29,9 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/api/verify/**", "/oauth2/**").permitAll()
-                        .requestMatchers("/assets/**"
-                                ,"/api/admin/all-temp"
-                                , "/api/admin/**"
+                        .requestMatchers("/api/auth/**", "/api/verify/**", "/oauth2/**", "/assets/**").permitAll()
+                        .requestMatchers(
+                                "/api/admin/**"
                                 ,"/api/user/**"
                                 ,"/api/user-streak/**"
                                 ,"/api/quiz/**"
@@ -48,25 +47,28 @@ public class SecurityConfig {
                                 ,"/api/user-lesson-progress/**"
                                 ,"/api/user-level/**"
                                 ,"/api/level-exam/**"
+                                , "/api/exam/**"
                         )
                                 .permitAll()
-                        .requestMatchers("/assets/**"
-//                                ,"/api/admin/**"
-//                                ,"/api/user/**"
-//                                ,"/api/user-streak/**"
-//                                ,"/api/quiz/**"
-//                                ,"/api/practice/**"
-//                                ,"/api/progress/**"
-//                                ,"/api/lesson-cate/**"
-//                                ,"/api/lesson/**"
-//                                ,"/api/predict/**"
-//                                ,"/api/lesson-cate-route/**"
-//                                ,"/api/lesson-route/**"
-//                                ,"/api/character/**"
-//                                ,"/api/audio/**"
-//                                ,"/api/user-lesson-progress/**"
+                        .requestMatchers(
+                                "/api/user/**"
+                                ,"/api/user-streak/**"
+                                ,"/api/quiz/**"
+                                ,"/api/practice/**"
+                                ,"/api/progress/**"
+                                ,"/api/lesson-cate/**"
+                                ,"/api/lesson/**"
+                                ,"/api/predict/**"
+                                ,"/api/lesson-cate-route/**"
+                                ,"/api/lesson-route/**"
+                                ,"/api/character/**"
+                                ,"/api/audio/**"
+                                ,"/api/user-lesson-progress/**"
+                                ,"/api/user-level/**"
+                                ,"/api/level-exam/**"
                         ).authenticated()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/admin/all-temp", "/api/character/all").permitAll() // Fast API
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth -> oauth.defaultSuccessUrl(OAUTH_SUCCESS, true))

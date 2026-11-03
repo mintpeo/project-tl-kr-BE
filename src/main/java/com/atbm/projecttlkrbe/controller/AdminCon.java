@@ -25,6 +25,16 @@ public class AdminCon {
     private final AdminStrokeDataSer strokeDataSer;
     private final AdminTempDataSer tempDataSer;
 
+    @PostMapping("/edit-exam-config")
+    public boolean editExamConfig(@RequestBody AdminExamConfigReq req) {
+        return lessonSer.editExamConfig(req);
+    }
+
+    @GetMapping("/exam-config")
+    public ExamConfig getExamConfig() {
+        return lessonSer.getExamConfig();
+    }
+
     @PostMapping("/update-order-index-cate")
     public boolean updateOrderIndexCate(@RequestBody AdminCateOrderIndexReq req) {
         return lessonSer.updateOrderIndexCate(req);
