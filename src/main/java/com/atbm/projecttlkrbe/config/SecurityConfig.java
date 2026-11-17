@@ -47,7 +47,7 @@ public class SecurityConfig {
                                 ,"/api/user-lesson-progress/**"
                                 ,"/api/user-level/**"
                                 ,"/api/level-exam/**"
-                                , "/api/exam/**"
+                                ,"/api/exam/**"
                         )
                                 .permitAll()
                         .requestMatchers(

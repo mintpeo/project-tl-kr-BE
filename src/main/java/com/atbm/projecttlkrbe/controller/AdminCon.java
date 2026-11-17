@@ -25,6 +25,18 @@ public class AdminCon {
     private final AdminStrokeDataSer strokeDataSer;
     private final AdminTempDataSer tempDataSer;
 
+    @DeleteMapping("/quiz")
+    public boolean delete(@RequestBody Map<String, Long> body) {
+        Long quizId = body.get("quizId");
+        return exerciseSer.deleteQuiz(quizId);
+    }
+
+    @PostMapping("/add-new-quiz")
+    public boolean addNewQuiz(@RequestBody Map<String, String> body) {
+        String nameQuiz = body.get("nameQuiz");
+        return exerciseSer.addNewQuiz(nameQuiz);
+    }
+
     @PostMapping("/edit-exam-config")
     public boolean editExamConfig(@RequestBody AdminExamConfigReq req) {
         return lessonSer.editExamConfig(req);

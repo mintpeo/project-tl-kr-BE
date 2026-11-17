@@ -92,7 +92,7 @@ public class VerifySer {
 
     // Send Verify Email
     private void sendVerifyMail(String email, int code) {
-        String subject = "Mã xác minh của bạn";
+        String subject = "Mã xác minh của bạn trên Học chữ Hàn cùng AI";
         String text = "Mã xác minh của bạn là: " + code + " và sẽ hết hạn sau 5 phút";
         mailSer.sendMail(email, subject, text);
     }

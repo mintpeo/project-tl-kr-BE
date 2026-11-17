@@ -91,14 +91,14 @@ public class ProgressSer {
         return res;
     }
 
-    // Get Total Practice
+    // Get Total Practice - Days: 45
     public List<Double> getTotalPractice(DailyScoreReq req) {
         List<DailyScoreDateRes> dateRes = practiceRep.getDailyAccuracySince(req.getUserId(), req.getDays());
         return dateRes.stream().map(res -> res.getTotalPractice() != null ? res.getTotalPractice().doubleValue() : 0.0)
                 .toList();
     }
 
-    // Get Daily
+    // Get Daily - 7/14 day
     public List<DailyScoreDateRes> getDaily(DailyScoreReq req) {
         return practiceRep.getDailyAccuracySince(req.getUserId(), req.getDays());
     }

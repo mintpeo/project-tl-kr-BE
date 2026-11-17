@@ -21,18 +21,6 @@ import java.util.Map;
 public class QuizCon {
     private final QuizSer ser;
 
-    @DeleteMapping("/delete")
-    public boolean delete(@RequestBody Map<String, Long> body) {
-        Long quizId = body.get("quizId");
-        return ser.deleteQuiz(quizId);
-    }
-
-    @PostMapping("/add-new-quiz")
-    public boolean addNewQuiz(@RequestBody Map<String, String> body) {
-        String nameQuiz = body.get("nameQuiz");
-        return ser.addNewQuiz(nameQuiz);
-    }
-
     @PostMapping("/level-exam")
     public QuestionCorrectLevelExamRes levelExam(@RequestBody ListQuestionsReq req) {
         return ser.handleListCorrect(req);

@@ -22,6 +22,26 @@ public class AdminExerciseSer {
     private final QuestionRep questionRep;
     private final OptionRep optionRep;
 
+    // Delete Quiz
+    public boolean deleteQuiz(Long quizId) {
+        Quiz quiz = quizRep.findById(quizId).orElse(null);
+        if (quiz == null) return false;
+
+        List<Question> questions = questionRep.findByQuizId(quizId);
+        for (Question question : questions) question.setQuiz(null);
+        questionRep.saveAll(questions);
+        quizRep.delete(quiz);
+        return true;
+    }
+
+    // Add New Quiz
+    public boolean addNewQuiz(String nameQuiz) {
+        Quiz quiz = new Quiz();
+        quiz.setTitle(nameQuiz);
+        quizRep.save(quiz);
+        return true;
+    }
+
     // Delete Question
     public boolean deleteQuestion(Long questionId) {
         Question question = questionRep.findById(questionId).orElseThrow(() -> new RuntimeException("Question not found: " + questionId));
@@ -40,6 +60,7 @@ public class AdminExerciseSer {
         res.setQuestionText(req.getQuestion());
         res.setMediaUrl(req.getQuestionMediaUrl());
         res.setAudio(req.isAudio());
+        res.setQuestionAudio(req.isQuestionAudio());
         Question savedQuestion = questionRep.save(res);
         // Options
         List<Option> options = new ArrayList<>();

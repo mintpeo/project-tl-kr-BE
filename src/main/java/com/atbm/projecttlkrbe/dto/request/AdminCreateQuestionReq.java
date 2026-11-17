@@ -13,6 +13,9 @@ public class AdminCreateQuestionReq {
     private int correct;
     private List<AdminCreateOptionReq> options;
 
+    @JsonProperty("isQuestionAudio")
+    private boolean isQuestionAudio;
+
     @JsonProperty("isAudio")
     private boolean isAudio;
 }

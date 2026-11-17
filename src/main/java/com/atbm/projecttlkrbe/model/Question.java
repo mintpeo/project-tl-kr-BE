@@ -19,6 +19,9 @@ public class Question {
 
     private String questionText;
     private String mediaUrl;
+    /**
+     * isAudio mean options is audio
+     */
     private boolean isAudio;
     private boolean isQuestionAudio;
 
