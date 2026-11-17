@@ -6,7 +6,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Map;
 
 @Service
@@ -49,6 +53,16 @@ public class CloudinarySer {
         } catch (IOException e) {
             // Ghi log lỗi xóa file
             e.printStackTrace();
+        }
+    }
+
+    private void requirePngOrJpg(MultipartFile file) throws IOException {
+        if (file == null || file.isEmpty()) throw new IllegalArgumentException("Chưa chọn file");
+        try (ImageInputStream in = ImageIO.createImageInputStream(file.getInputStream())) {
+            Iterator<ImageReader> readers = ImageIO.getImageReaders(in);
+            if (!readers.hasNext()) throw new IllegalArgumentException("File không phải ảnh");
+            String format = readers.next().getFormatName().toLowerCase();
+            if (!format.equals("png") && !format.equals("jpeg")) throw new IllegalArgumentException("Chỉ chấp nhận file PNG hoặc JPG");
         }
     }
 }

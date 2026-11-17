@@ -1,6 +1,5 @@
 package com.atbm.projecttlkrbe.service;
 
-import com.atbm.projecttlkrbe.dto.request.AuthChangePassReq;
 import com.atbm.projecttlkrbe.dto.request.AuthReq;
 import com.atbm.projecttlkrbe.dto.request.AuthResetPassReq;
 import com.atbm.projecttlkrbe.dto.response.AuthRes;
@@ -39,6 +38,7 @@ public class AuthSer {
     private final ResetPassRep resetPassRep;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final UserLevelSer userLevelSer;
 
     // Login with Google
     // Get JSESSIONID => API User for Google
@@ -71,7 +71,8 @@ public class AuthSer {
             User newUser = new User();
             newUser.setAuth(auth);
             newUser.setFullName(name);
-            userRep.save(newUser);
+            User saveUser = userRep.save(newUser);
+            userLevelSer.setUserLevel(saveUser.getId());
         } else {
             auth = authOpt.get();
         }
@@ -128,7 +129,8 @@ public class AuthSer {
         User newUser = new User();
         newUser.setAuth(auth);
         newUser.setFullName(authReq.getName());
-        userRep.save(newUser);
+        User user = userRep.save(newUser);
+        userLevelSer.setUserLevel(user.getId());
 
         // Save Code
         verifySer.saveCode(saveAuth);

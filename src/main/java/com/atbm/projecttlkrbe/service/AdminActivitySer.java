@@ -26,12 +26,15 @@ public class AdminActivitySer {
     private final LessonRouteRep lessonRouteRep;
     private final QuizAttemptsRep quizAttemptsRep;
     private final ProgressSer progressSer;
+    private final UserLevelSer userLevelSer;
 
     // Get All Lesson
     public List<AdminLessonActivityRes> getLessonActivity() {
         List<LessonRoute> lessonRoutes = lessonRouteRep.findAll();
         List<AdminLessonActivityRes> res = new ArrayList<>();
         for (LessonRoute lesson : lessonRoutes) {
+            if (!lesson.isActive()) continue;
+
             AdminLessonActivityRes alar = new AdminLessonActivityRes();
             List<UserLessonProgress> lessonProgresses = userLessonProgressRep.findByLessonRoute_Id(lesson.getId());
             alar.setLessonId(lesson.getId());
@@ -56,9 +59,7 @@ public class AdminActivitySer {
             AdminUserLevelActivityRes activity = new AdminUserLevelActivityRes();
             List<UserLevel> uls = userLevelList.stream().filter(l -> l.getLevel().equals(level)).toList();
             switch (level) {
-                case NOVICE: activity.setLevelName("Mới bắt đầu"); break;
                 case BEGINNER: activity.setLevelName("Cơ bản"); break;
-                case INTERMEDIATE: activity.setLevelName("Trung cấp"); break;
                 default: activity.setLevelName("Nâng cao"); break;
             }
             activity.setTotalUser(uls.size());
@@ -168,7 +169,7 @@ public class AdminActivitySer {
         List<MasterRes> masterRes = progressSer.handleMasterList(user.getId());
         activity.setHandwriting(masterRes);
         // Level
-        UserLevelRes level = progressSer.getUserLevel(user.getId());
+        UserLevelRes level = userLevelSer.getUserLevelByUserId(user.getId());
         activity.setLevel(level);
 
         return activity;
@@ -186,7 +187,8 @@ public class AdminActivitySer {
         for (UserLessonProgress progress : progresses) {
             Long lessonId = progress.getLessonRoute().getId();
             LessonRoute lesson = lessonRouteRep.findById(lessonId).orElseThrow(() -> new RuntimeException("Lesson not found: " + lessonId));
-
+            if (!lesson.isActive()) continue;
+            // Lesson
             AdminLessonUserRes activity = new AdminLessonUserRes();
             activity.setLessonId(lessonId);
             activity.setName(lesson.getName());
@@ -198,7 +200,7 @@ public class AdminActivitySer {
                 activity.setProgress(0);
                 learningLessons++;
             }
-
+            // Quiz
             AdminQuizActivityRes quizActivity = new AdminQuizActivityRes();
             Quiz quiz = lesson.getQuiz();
             if (quiz == null) {

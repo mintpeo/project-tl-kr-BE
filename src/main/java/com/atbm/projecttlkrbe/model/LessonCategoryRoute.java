@@ -14,4 +14,5 @@ public class LessonCategoryRoute {
     private String name;
     private Integer orderIndex;
     private String description;
+    private boolean active;
 }

@@ -15,6 +15,11 @@ import java.util.List;
 public class LessonRouteCon {
     private final LessonRouteSer ser;
 
+    @GetMapping("/lessons-home")
+    public List<LessonRouteRes> getLessonsHome() {
+        return ser.getLessonHomeRoutes();
+    }
+
     @PostMapping("/lessons")
     public List<LessonRouteRes> getLessonByCateRouteId(@RequestBody LessonRouteReq req) {
         return ser.getLessonWithCateRouteId(req);

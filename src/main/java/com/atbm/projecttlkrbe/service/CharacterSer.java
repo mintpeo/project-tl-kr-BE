@@ -31,6 +31,7 @@ public class CharacterSer {
             c.setStrokeCount(e.getStrokeCount());
             c.setTranscription(e.getTranscription());
             c.setType(e.getType().toString());
+            c.setAudioUrl(e.getAudio());
 
             AdminStrokeData asd = dataRep.findByCharacterIdOrderByIdDesc(e.getId()).orElse(null);
             if (asd != null) {

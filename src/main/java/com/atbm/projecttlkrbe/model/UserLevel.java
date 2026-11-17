@@ -19,8 +19,4 @@ public class UserLevel {
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
-
-    private Double accuracyRate;
-    private Integer totalScore;
-    private Integer totalQuestions;
 }
